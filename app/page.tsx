@@ -13,28 +13,40 @@ const sampleImages = [
   { name: 'image2.png', size: 512000 },
   { name: 'image3.gif', size: 1048576 },
   { name: 'image4.webp', size: 256000 },
+  /*
   { name: 'image5.svg', size: 102400 },
   { name: 'image6.webp', size: 256000 },
   { name: 'image7.svg', size: 102400 },
+   */
 ];
 
 export default function Home() {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState(sampleImages);
 
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
       <main className="flex-1 p-4">
         <div className="flex min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-6rem)] flex-col gap-4 lg:gap-6 lg:p-6">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold md:text-2xl">Konvert to</h1>
-              <SelectFormat />
+          <div className="flex flex-col gap-2 md:flex-row justify-between sm:items-center sm:gap-4">
+            <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+              <div className="flex w-full md:w-auto items-center justify-start gap-2">
+                <h1 className="text-lg font-semibold md:text-2xl">
+                  Convert to
+                </h1>
+                <SelectFormat />
+              </div>
+              <div className="flex w-full md:w-auto items-center justify-start gap-2">
+                <h1 className="text-lg font-semibold md:text-2xl">in</h1>
+                <SelectQuality />
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold md:text-2xl">in</h1>
-              <SelectQuality />
-            </div>
+            {/* Shows when images are not empty */}
+            {images.length > 0 && (
+              <div className="flex mt-2 md:justify-end md:mt-0">
+                <Button variant="default">Add more...</Button>
+              </div>
+            )}
           </div>
 
           {/* Drop files section */}
@@ -48,12 +60,9 @@ export default function Home() {
                   <p className="text-sm text-muted-foreground">
                     Max size 100MB
                   </p>
-                  <Input
-                    id="picture"
-                    type="file"
-                    className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90"
-                    placeholder="Choose files"
-                  />
+                  <Button variant="default" className="mt-4">
+                    Choose files
+                  </Button>
                 </div>
               </div>
             ) : (
