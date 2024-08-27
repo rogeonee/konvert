@@ -18,8 +18,8 @@ const formats = [
 const SelectFormat = () => {
   return (
     <Select>
-      <SelectTrigger id="format" className="w-[160px]">
-        <SelectValue placeholder="Select a format" />
+      <SelectTrigger id="format" className="w-[120px]">
+        <SelectValue placeholder="Convert to" />
       </SelectTrigger>
       <SelectContent>
         {formats.map((format) => (

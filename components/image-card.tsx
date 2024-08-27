@@ -8,7 +8,9 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import SelectFormat from './select-format';
 import { X } from 'lucide-react';
+import useMobile from '@/lib/useMobile';
 
 type ImageProps = {
   filename: string;
@@ -17,26 +19,42 @@ type ImageProps = {
 };
 
 const ImageCard: React.FC<ImageProps> = ({ filename, filesize }) => {
-  // Helper function to format the file size
+  const isMobile = useMobile();
+
+  // Format the file size
   const formatFileSize = (size: number) => {
     if (size < 1024) return size + ' B';
     if (size < 1048576) return (size / 1024).toFixed(2) + ' KB';
     return (size / 1048576).toFixed(2) + ' MB';
   };
 
+  // Truncate the filename on mobile
+  const truncateFilename = (name: string) => {
+    const maxLength = 6; // 6 for filename + 5 for format
+    return name.length > maxLength ? name.slice(0, maxLength - 3) + '..' : name;
+  };
+
+  // Split the filename and format
+  const splitFilename = filename.split('.');
+  const namePart = splitFilename[0];
+  const formatPart = splitFilename[1] ? `.${splitFilename[1]}` : '';
+
   return (
-    <Card className="flex flex-row justify-between items-center w-full h-20 p-4">
-      <CardHeader>
+    <Card className="flex flex-row justify-between items-center w-full h-20 pl-0 pr-4">
+      <CardHeader className="flex-1">
         <div>
           <CardTitle className="text-md font-medium sm:text-md md:text-lg">
-            {filename}
+            {isMobile ? truncateFilename(namePart) + formatPart : filename}{' '}
           </CardTitle>
           <CardDescription>{formatFileSize(filesize)}</CardDescription>
         </div>
       </CardHeader>
-      <Button variant="outline" size="icon" className="hover:border-red-500">
-        <X />
-      </Button>
+      <div className="flex items-center gap-4">
+        <SelectFormat />
+        <Button variant="outline" size="icon" className="hover:border-red-500">
+          <X />
+        </Button>
+      </div>
     </Card>
   );
 };

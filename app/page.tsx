@@ -6,13 +6,12 @@ import { Button } from '@/components/ui/button';
 import SelectFormat from '@/components/select-format';
 import SelectQuality from '@/components/select-quality';
 import ImageCard from '@/components/image-card';
-import { Input } from '@/components/ui/input';
 
 const sampleImages = [
   { name: 'image1.jpg', size: 204800 },
   { name: 'image2.png', size: 512000 },
   { name: 'image3.gif', size: 1048576 },
-  { name: 'image4.webp', size: 256000 },
+  { name: 'image44.webp', size: 256000 },
   /*
   { name: 'image5.svg', size: 102400 },
   { name: 'image6.webp', size: 256000 },
@@ -32,12 +31,8 @@ export default function Home() {
             <div className="flex flex-col md:flex-row items-center gap-4 w-full">
               <div className="flex w-full md:w-auto items-center justify-start gap-2">
                 <h1 className="text-lg font-semibold md:text-2xl">
-                  Convert to
+                  Convert in
                 </h1>
-                <SelectFormat />
-              </div>
-              <div className="flex w-full md:w-auto items-center justify-start gap-2">
-                <h1 className="text-lg font-semibold md:text-2xl">in</h1>
                 <SelectQuality />
               </div>
             </div>
