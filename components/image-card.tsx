@@ -15,10 +15,10 @@ import useMobile from '@/lib/useMobile';
 type ImageProps = {
   filename: string;
   filesize: number;
-  // onRemove: () => void;
+  onRemove: () => void;
 };
 
-const ImageCard: React.FC<ImageProps> = ({ filename, filesize }) => {
+const ImageCard: React.FC<ImageProps> = ({ filename, filesize, onRemove }) => {
   const isMobile = useMobile();
 
   // Format the file size
@@ -51,7 +51,12 @@ const ImageCard: React.FC<ImageProps> = ({ filename, filesize }) => {
       </CardHeader>
       <div className="flex items-center gap-4">
         <SelectFormat />
-        <Button variant="outline" size="icon" className="hover:border-red-500">
+        <Button
+          variant="outline"
+          size="icon"
+          className="hover:border-red-500"
+          onClick={onRemove}
+        >
           <X />
         </Button>
       </div>

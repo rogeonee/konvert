@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
-import SelectFormat from '@/components/select-format';
 import SelectQuality from '@/components/select-quality';
 import ImageCard from '@/components/image-card';
 
@@ -19,8 +19,40 @@ const sampleImages = [
    */
 ];
 
+interface ImageFile {
+  name: string;
+  size: number;
+  file: File;
+}
+
 export default function Home() {
-  const [images, setImages] = useState(sampleImages);
+  const [images, setImages] = useState<ImageFile[]>([]);
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const newImages = acceptedFiles.map((file) => ({
+      name: file.name,
+      size: file.size,
+      file: file,
+    }));
+    setImages((prevImages) => [...prevImages, ...newImages]);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.jpeg', '.png', '.jpg', '.gif', '.webp'],
+    },
+    maxSize: 100 * 1024 * 1024, // 100MB
+    noClick: true,
+  });
+
+  const handleAddMore = () => {
+    (document.getElementById('fileInput') as HTMLInputElement)!.click();
+  };
+
+  const handleRemove = (index: number) => {
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -39,23 +71,37 @@ export default function Home() {
             {/* Shows when images are not empty */}
             {images.length > 0 && (
               <div className="flex mt-2 md:justify-end md:mt-0">
-                <Button variant="default">Add more...</Button>
+                <Button variant="default" onClick={handleAddMore}>
+                  Add more...
+                </Button>
               </div>
             )}
           </div>
 
           {/* Drop files section */}
-          <div className="flex flex-1 bg-muted/50 rounded-lg border-2 border-dashed shadow-sm p-2 md:p-4">
+          <div
+            {...getRootProps()}
+            className={`flex flex-1 bg-muted/50 rounded-lg border-2 border-dashed shadow-sm p-2 md:p-4 ${
+              isDragActive ? 'border-primary' : 'border-muted'
+            }`}
+          >
+            <input {...getInputProps()} id="fileInput" />
             {images.length === 0 ? (
               <div className="flex flex-1 items-center justify-center">
                 <div className="flex flex-col items-center gap-1 text-center">
                   <h3 className="text-2xl font-bold tracking-tight">
-                    Drop files or pick manually
+                    {isDragActive
+                      ? 'Drop the files here'
+                      : 'Drop files or pick manually'}
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     Max size 100MB
                   </p>
-                  <Button variant="default" className="mt-4">
+                  <Button
+                    variant="default"
+                    className="mt-4"
+                    onClick={handleAddMore}
+                  >
                     Choose files
                   </Button>
                 </div>
@@ -67,6 +113,7 @@ export default function Home() {
                     key={index}
                     filename={image.name}
                     filesize={image.size}
+                    onRemove={() => handleRemove(index)}
                   />
                 ))}
               </div>
@@ -75,7 +122,7 @@ export default function Home() {
 
           <div className="flex justify-center">
             <Button disabled={images.length === 0} className="w-60">
-              Konvert
+              {images.length > 1 ? 'Konvert all' : 'Konvert'}
             </Button>
           </div>
         </div>
