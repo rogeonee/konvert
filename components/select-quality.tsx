@@ -1,4 +1,5 @@
 import React from 'react';
+import { Control, Controller } from 'react-hook-form';
 import {
   Select,
   SelectTrigger,
@@ -14,41 +15,52 @@ const qualities = [
     description: 'As sharp as possible.',
   },
   {
-    value: 'balanced',
+    value: 'medium',
     label: 'Balanced',
     description: 'Neither fish nor meat.',
   },
   {
-    value: 'fast',
+    value: 'low',
     label: 'Fast',
     description: 'I am speed.',
   },
 ];
 
-const SelectQuality = () => {
+interface SelectQualityProps {
+  control: Control<any>;
+  name: string;
+}
+
+const SelectQuality: React.FC<SelectQualityProps> = ({ control, name }) => {
   return (
-    <Select defaultValue="high">
-      <SelectTrigger
-        id="quality"
-        className="w-[180px] [&_[data-description]]:hidden"
-      >
-        <SelectValue placeholder="Select a quality level" />
-      </SelectTrigger>
-      <SelectContent>
-        {qualities.map((quality) => (
-          <SelectItem key={quality.value} value={quality.value}>
-            <div className="flex items-start gap-3 text-muted-foreground">
-              <div className="grid gap-0.5">
-                <p className="font-medium text-foreground">{quality.label}</p>
-                <p className="text-xs" data-description>
-                  {quality.description}
-                </p>
-              </div>
-            </div>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <SelectTrigger className="w-[150px] [&_[data-description]]:hidden">
+            <SelectValue placeholder="Select quality" />
+          </SelectTrigger>
+          <SelectContent>
+            {qualities.map((quality) => (
+              <SelectItem key={quality.value} value={quality.value}>
+                {' '}
+                <div className="flex items-start gap-3 text-muted-foreground">
+                  <div className="grid gap-0.5">
+                    <p className="font-medium text-foreground">
+                      {quality.label}
+                    </p>
+                    <p className="text-xs" data-description>
+                      {quality.description}
+                    </p>
+                  </div>
+                </div>{' '}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+    />
   );
 };
 
