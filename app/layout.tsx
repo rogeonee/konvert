@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
+import Navbar from '@/components/navbar';
 import { cn } from '@/lib/utils';
 import './globals.css';
 
@@ -33,7 +34,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="flex min-h-screen w-full flex-col">
+            <Navbar />
+            <main className="flex-1 p-4">{children}</main>
+          </div>
         </ThemeProvider>
       </body>
     </html>

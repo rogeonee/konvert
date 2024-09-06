@@ -16,17 +16,17 @@ import useMobile from '@/lib/useMobile';
 type ImageProps = {
   filename: string;
   filesize: number;
-  onRemove: () => void;
   control: Control<any>;
   name: string;
+  onRemove: () => void;
 };
 
 const ImageCard: React.FC<ImageProps> = ({
   filename,
   filesize,
-  onRemove,
   control,
   name,
+  onRemove,
 }) => {
   const isMobile = useMobile();
   const { errors } = useFormState({ control });
