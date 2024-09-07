@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import ImageCard from '@/components/image-card';
 import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -24,6 +25,8 @@ const formSchema = z.object({
 export type FormData = z.infer<typeof formSchema>;
 
 const Home = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,15 +64,49 @@ const Home = () => {
     (document.getElementById('fileInput') as HTMLInputElement)!.click();
   };
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log('submit pressed');
+    setIsLoading(true);
 
     // Runtime check for File objects
     const isValid = data.images.every((image) => image.file instanceof File);
     if (isValid) {
       console.log(data);
+
+      try {
+        // Process each image
+        const conversionPromises = data.images.map(async (image, index) => {
+          const formData = new FormData();
+          formData.append('image', image.file);
+          formData.append('quality', data.quality);
+          formData.append('format', image.format);
+
+          const response = await fetch('http://localhost:3001/convert', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to convert image ${index + 1}`);
+          }
+
+          return await response.json();
+        });
+
+        // Wait for all conversions to complete
+        const results = await Promise.all(conversionPromises);
+
+        console.log('Conversion results:', results);
+        // Handle successful conversions (e.g., show success message, download links, etc.)
+      } catch (error) {
+        console.error('Error during conversion:', error);
+        // Handle error (e.g., show error message)
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       console.error('Invalid file data');
+      // Handle invalid data (e.g., show error message)
     }
   };
 
@@ -136,10 +173,19 @@ const Home = () => {
           <div className="flex justify-center">
             <Button
               type="submit"
-              disabled={fields.length === 0}
+              disabled={fields.length === 0 || isLoading}
               className="w-60"
             >
-              {fields.length > 1 ? 'Konvert all' : 'Konvert'}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Konverting...
+                </>
+              ) : fields.length > 1 ? (
+                'Konvert all'
+              ) : (
+                'Konvert'
+              )}
             </Button>
           </div>
         </div>
