@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import ImageCard from '@/components/image-card';
 import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
+import { useHeicConversion } from '@/lib/useHeicConversion';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -51,25 +52,44 @@ const Home = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.png', '.jpg', '.gif', '.webp'],
+      'image/*': ['.heic'],
     },
     maxSize: 100 * 1024 * 1024, // 100MB
     noClick: true,
   });
 
+  const { convertHeicToFormat, isConverting } = useHeicConversion();
+
   const handleAddMore = () => {
     (document.getElementById('fileInput') as HTMLInputElement)!.click();
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log('submit pressed');
+  const onSubmit = async (data: FormData) => {
+    console.log('onSubmit fired');
+    let allSuccessful = true;
+    const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
 
-    // Runtime check for File objects
-    const isValid = data.images.every((image) => image.file instanceof File);
-    if (isValid) {
-      console.log(data);
-    } else {
-      console.error('Invalid file data');
+    for (const image of data.images) {
+      try {
+        console.log('onSubmit | image:', image);
+        await convertHeicToFormat(
+          image.file,
+          image.format,
+          qualityMap[data.quality],
+        );
+        console.log('Converted!');
+      } catch (error) {
+        console.error(`Error converting ${image.file.name}:`, error);
+        allSuccessful = false;
+      }
+    }
+
+    if (allSuccessful) {
+      // Reset the form
+      form.reset({
+        quality: 'high',
+        images: [],
+      });
     }
   };
 
@@ -136,10 +156,14 @@ const Home = () => {
           <div className="flex justify-center">
             <Button
               type="submit"
-              disabled={fields.length === 0}
+              disabled={fields.length === 0 || isConverting}
               className="w-60"
             >
-              {fields.length > 1 ? 'Konvert all' : 'Konvert'}
+              {isConverting
+                ? 'Konverting...'
+                : fields.length > 1
+                ? 'Konvert all'
+                : 'Konvert'}
             </Button>
           </div>
         </div>
