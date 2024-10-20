@@ -11,6 +11,7 @@ import ImageCard from '@/components/image-card';
 import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
 import { useHeicConversion } from '@/lib/useHeicConversion';
+import { filterHeicFiles } from '@/lib/utils';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -40,10 +41,13 @@ const Home = () => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const newImages = acceptedFiles.map((file) => ({
+      const validFiles = filterHeicFiles(acceptedFiles);
+
+      const newImages = validFiles.map((file) => ({
         file,
         format: '',
       }));
+
       append(newImages);
     },
     [append],
@@ -61,7 +65,26 @@ const Home = () => {
   const { convertHeicToFormat, isConverting } = useHeicConversion();
 
   const handleAddMore = () => {
-    (document.getElementById('fileInput') as HTMLInputElement)!.click();
+    const input = document.getElementById('fileInput') as HTMLInputElement;
+
+    input.onchange = (event: Event) => {
+      const files = Array.from(input.files || []);
+      const validFiles = filterHeicFiles(files);
+
+      const newImages = validFiles.map((file) => ({
+        file,
+        format: '',
+      }));
+
+      console.log('newImages:', newImages);
+
+      append(newImages);
+
+      // Clear the file input value to prevent duplicates
+      input.value = '';
+    };
+
+    input.click();
   };
 
   const onSubmit = async (data: FormData) => {
@@ -111,7 +134,7 @@ const Home = () => {
               isDragActive ? 'border-primary' : 'border-muted'
             }`}
           >
-            <input {...getInputProps()} id="fileInput" />
+            <input {...getInputProps()} id="fileInput" accept=".heic" />
             {fields.length === 0 ? (
               <div className="flex flex-1 items-center justify-center">
                 <div className="flex flex-col items-center gap-1 text-center">
