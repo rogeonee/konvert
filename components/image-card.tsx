@@ -47,14 +47,18 @@ const ImageCard: React.FC<ImageProps> = ({
   // Split the filename and format
   const splitFilename = filename.split('.');
   const namePart = splitFilename[0];
-  const formatPart = splitFilename[1] ? `.${splitFilename[1]}` : '';
+  const formatPart = splitFilename[1]
+    ? `.${splitFilename[1].toUpperCase()}`
+    : ''.toUpperCase();
 
   return (
     <Card className="flex flex-row justify-between items-center w-full h-20 pl-0 pr-4">
       <CardHeader className="flex-1">
         <div>
           <CardTitle className="text-md font-medium sm:text-md md:text-lg">
-            {isMobile ? truncateFilename(namePart) + formatPart : filename}{' '}
+            {isMobile
+              ? truncateFilename(namePart) + formatPart
+              : namePart + formatPart}{' '}
           </CardTitle>
           <CardDescription>{formatFileSize(filesize)}</CardDescription>
         </div>

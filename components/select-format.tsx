@@ -11,9 +11,9 @@ import { cn } from '@/lib/utils';
 const formats = [
   { value: 'jpg', label: 'JPG' },
   { value: 'png', label: 'PNG' },
-  { value: 'svg', label: 'SVG' },
-  { value: 'webp', label: 'WEBP' },
-  { value: 'gif', label: 'GIF' },
+  // { value: 'svg', label: 'SVG' },
+  // { value: 'webp', label: 'WEBP' },
+  // { value: 'gif', label: 'GIF' },
 ];
 
 interface SelectFormatProps {
@@ -36,7 +36,7 @@ const SelectFormat: React.FC<SelectFormatProps> = ({
           error && 'border-red-500 focus:ring-red-500',
         )}
       >
-        <SelectValue placeholder="Convert to" />
+        <SelectValue placeholder="Convert to" defaultValue="jpg" />
       </SelectTrigger>
       <SelectContent>
         {formats.map((format) => (

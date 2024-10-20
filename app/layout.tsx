@@ -1,8 +1,8 @@
 import { Inter as FontSans } from 'next/font/google';
+import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import Navbar from '@/components/navbar';
 import { cn } from '@/lib/utils';
-import './globals.css';
 import { SEO } from '@/lib/seo-config';
 
 const fontSans = FontSans({

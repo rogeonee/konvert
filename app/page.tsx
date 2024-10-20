@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import ImageCard from '@/components/image-card';
 import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
+import { useHeicConversion } from '@/lib/useHeicConversion';
+import { filterHeicFiles } from '@/lib/utils';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -39,10 +41,13 @@ const Home = () => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const newImages = acceptedFiles.map((file) => ({
+      const validFiles = filterHeicFiles(acceptedFiles);
+
+      const newImages = validFiles.map((file) => ({
         file,
         format: '',
       }));
+
       append(newImages);
     },
     [append],
@@ -51,25 +56,63 @@ const Home = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.png', '.jpg', '.gif', '.webp'],
+      'image/*': ['.heic'],
     },
     maxSize: 100 * 1024 * 1024, // 100MB
     noClick: true,
   });
 
+  const { convertHeicToFormat, isConverting } = useHeicConversion();
+
   const handleAddMore = () => {
-    (document.getElementById('fileInput') as HTMLInputElement)!.click();
+    const input = document.getElementById('fileInput') as HTMLInputElement;
+
+    input.onchange = (event: Event) => {
+      const files = Array.from(input.files || []);
+      const validFiles = filterHeicFiles(files);
+
+      const newImages = validFiles.map((file) => ({
+        file,
+        format: '',
+      }));
+
+      console.log('newImages:', newImages);
+
+      append(newImages);
+
+      // Clear the file input value to prevent duplicates
+      input.value = '';
+    };
+
+    input.click();
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log('submit pressed');
+  const onSubmit = async (data: FormData) => {
+    console.log('onSubmit fired');
+    let allSuccessful = true;
+    const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
 
-    // Runtime check for File objects
-    const isValid = data.images.every((image) => image.file instanceof File);
-    if (isValid) {
-      console.log(data);
-    } else {
-      console.error('Invalid file data');
+    for (const image of data.images) {
+      try {
+        console.log('onSubmit | image:', image);
+        await convertHeicToFormat(
+          image.file,
+          image.format,
+          qualityMap[data.quality],
+        );
+        console.log('Converted!');
+      } catch (error) {
+        console.error(`Error converting ${image.file.name}:`, error);
+        allSuccessful = false;
+      }
+    }
+
+    if (allSuccessful) {
+      // Reset the form
+      form.reset({
+        quality: 'high',
+        images: [],
+      });
     }
   };
 
@@ -91,7 +134,7 @@ const Home = () => {
               isDragActive ? 'border-primary' : 'border-muted'
             }`}
           >
-            <input {...getInputProps()} id="fileInput" />
+            <input {...getInputProps()} id="fileInput" accept=".heic" />
             {fields.length === 0 ? (
               <div className="flex flex-1 items-center justify-center">
                 <div className="flex flex-col items-center gap-1 text-center">
@@ -136,10 +179,14 @@ const Home = () => {
           <div className="flex justify-center">
             <Button
               type="submit"
-              disabled={fields.length === 0}
+              disabled={fields.length === 0 || isConverting}
               className="w-60"
             >
-              {fields.length > 1 ? 'Konvert all' : 'Konvert'}
+              {isConverting
+                ? 'Konverting...'
+                : fields.length > 1
+                ? 'Konvert all'
+                : 'Konvert'}
             </Button>
           </div>
         </div>
