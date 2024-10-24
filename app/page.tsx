@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button';
 import ImageCard from '@/components/image-card';
 import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
-import { useHeicConversion } from '@/lib/useHeicConversion';
 import { filterHeicFiles } from '@/lib/utils';
+import { useHeicConversion } from '@/lib/useHeicConversion';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -62,7 +62,7 @@ const Home = () => {
     noClick: true,
   });
 
-  const { convertHeicToFormat, isConverting } = useHeicConversion();
+  const { convertHeicToFormat, isConverting, progress } = useHeicConversion();
 
   const handleAddMore = () => {
     const input = document.getElementById('fileInput') as HTMLInputElement;
@@ -89,30 +89,24 @@ const Home = () => {
 
   const onSubmit = async (data: FormData) => {
     console.log('onSubmit fired');
-    let allSuccessful = true;
     const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
 
-    for (const image of data.images) {
-      try {
-        console.log('onSubmit | image:', image);
+    try {
+      for (const image of data.images) {
         await convertHeicToFormat(
           image.file,
           image.format,
           qualityMap[data.quality],
         );
-        console.log('Converted!');
-      } catch (error) {
-        console.error(`Error converting ${image.file.name}:`, error);
-        allSuccessful = false;
       }
-    }
 
-    if (allSuccessful) {
-      // Reset the form
+      // Reset form after all conversions are complete
       form.reset({
         quality: 'high',
         images: [],
       });
+    } catch (error) {
+      console.error('Error during conversion:', error);
     }
   };
 
@@ -169,6 +163,7 @@ const Home = () => {
                     onRemove={() => remove(index)}
                     control={form.control}
                     name={`images.${index}.format`}
+                    progress={progress}
                   />
                 ))}
               </div>
