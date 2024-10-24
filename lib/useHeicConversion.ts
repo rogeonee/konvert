@@ -3,6 +3,7 @@ import decode from 'heic-decode';
 
 export const useHeicConversion = () => {
   const [isConverting, setIsConverting] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const convertHeicToFormat = async (
     file: File,
@@ -10,75 +11,72 @@ export const useHeicConversion = () => {
     quality: number,
   ) => {
     setIsConverting(true);
+    setProgress(10);
+
     try {
-      // Read the file as an ArrayBuffer
+      // Read file
       const arrayBuffer = await file.arrayBuffer();
+      setProgress(15);
 
-      // Create a Uint8Array from the ArrayBuffer
-      const uint8Array = new Uint8Array(arrayBuffer);
+      // Decode the HEIC file
+      const { width, height, data } = await decode({
+        buffer: new Uint8Array(arrayBuffer),
+      });
+      setProgress(65);
 
-      // Decode the HEIC image
-      const { width, height, data } = await decode({ buffer: uint8Array });
-
-      // Create a canvas element
+      // Create canvas
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
 
-      // Get the canvas context and create an ImageData object
       const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        throw new Error('Could not get canvas context');
-      }
+      if (!ctx) throw new Error('Could not get canvas context');
+
       const imageData = new ImageData(
         new Uint8ClampedArray(data),
         width,
         height,
       );
-
-      // Put the image data on the canvas
       ctx.putImageData(imageData, 0, 0);
+      setProgress(75);
 
+      // Create blob
       const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
-      const fileExtension = format === 'jpg' ? 'jpeg' : format;
 
       // Convert the canvas to the desired format
       const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob(
           (blob) => {
-            if (blob) {
-              resolve(blob);
-            } else {
-              reject(new Error('Failed to create blob'));
-            }
+            if (blob) resolve(blob);
+            else reject(new Error('Failed to create blob'));
           },
           mimeType,
           quality,
         );
       });
+      setProgress(100);
 
-      console.log(
-        `useConversion | blob | format: ${format} mimeType: ${mimeType} quality: ${quality}`,
-      );
-
-      const originalName = file.name.split('.').slice(0, -1).join('.');
-
-      // Create and trigger download
+      // Download the file
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${originalName}.${fileExtension}`;
+      a.download = `${file.name.split('.')[0]}.${
+        format === 'jpg' ? 'jpeg' : format
+      }`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      return;
     } catch (error) {
       console.error('Conversion failed:', error);
       throw error;
     } finally {
       setIsConverting(false);
+      setProgress(0);
     }
   };
 
-  return { convertHeicToFormat, isConverting };
+  return { convertHeicToFormat, isConverting, progress };
 };
