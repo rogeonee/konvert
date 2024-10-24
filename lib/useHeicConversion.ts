@@ -3,6 +3,7 @@ import decode from 'heic-decode';
 
 export const useHeicConversion = () => {
   const [isConverting, setIsConverting] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const convertHeicToFormat = async (
     file: File,
@@ -10,15 +11,18 @@ export const useHeicConversion = () => {
     quality: number,
   ) => {
     setIsConverting(true);
+    setProgress(10);
 
     try {
       // Read file
       const arrayBuffer = await file.arrayBuffer();
+      setProgress(15);
 
       // Decode the HEIC file
       const { width, height, data } = await decode({
         buffer: new Uint8Array(arrayBuffer),
       });
+      setProgress(65);
 
       // Create canvas
       const canvas = document.createElement('canvas');
@@ -34,6 +38,7 @@ export const useHeicConversion = () => {
         height,
       );
       ctx.putImageData(imageData, 0, 0);
+      setProgress(75);
 
       // Create blob
       const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
@@ -49,6 +54,7 @@ export const useHeicConversion = () => {
           quality,
         );
       });
+      setProgress(100);
 
       // Download the file
       const url = URL.createObjectURL(blob);
@@ -68,8 +74,9 @@ export const useHeicConversion = () => {
       throw error;
     } finally {
       setIsConverting(false);
+      setProgress(0);
     }
   };
 
-  return { convertHeicToFormat, isConverting };
+  return { convertHeicToFormat, isConverting, progress };
 };

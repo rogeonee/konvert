@@ -62,7 +62,7 @@ const Home = () => {
     noClick: true,
   });
 
-  const { convertHeicToFormat, isConverting } = useHeicConversion();
+  const { convertHeicToFormat, isConverting, progress } = useHeicConversion();
 
   const handleAddMore = () => {
     const input = document.getElementById('fileInput') as HTMLInputElement;
@@ -89,7 +89,6 @@ const Home = () => {
 
   const onSubmit = async (data: FormData) => {
     console.log('onSubmit fired');
-    let allSuccessful = true;
     const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
 
     try {
@@ -164,6 +163,7 @@ const Home = () => {
                     onRemove={() => remove(index)}
                     control={form.control}
                     name={`images.${index}.format`}
+                    progress={progress}
                   />
                 ))}
               </div>
