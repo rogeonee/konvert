@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Control, Controller, useFormState } from 'react-hook-form';
+import { Download, X } from 'lucide-react';
+import SelectFormat from './select-format';
 import {
   Card,
   CardHeader,
@@ -9,8 +11,6 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import SelectFormat from './select-format';
-import { X } from 'lucide-react';
 import useMobile from '@/lib/useMobile';
 
 type ImageProps = {
@@ -20,6 +20,8 @@ type ImageProps = {
   name: string;
   progress: number;
   onRemove: () => void;
+  onDownload?: () => void;
+  isConverted?: boolean;
 };
 
 const ImageCard: React.FC<ImageProps> = ({
@@ -29,6 +31,8 @@ const ImageCard: React.FC<ImageProps> = ({
   name,
   progress,
   onRemove,
+  onDownload,
+  isConverted,
 }) => {
   const isMobile = useMobile();
   const { errors } = useFormState({ control });
@@ -86,6 +90,19 @@ const ImageCard: React.FC<ImageProps> = ({
             />
           )}
         />
+        {isConverted && onDownload && (
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={(e) => {
+              e.preventDefault(); // Prevent form submission
+              e.stopPropagation(); // Stop event bubbling
+              onDownload();
+            }}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+        )}
         <Button
           variant="outline"
           size="icon"

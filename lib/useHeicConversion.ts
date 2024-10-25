@@ -1,9 +1,16 @@
 import { useState } from 'react';
 import decode from 'heic-decode';
 
+type ConvertedFile = {
+  blob: Blob;
+  originalName: string;
+  format: string;
+};
+
 export const useHeicConversion = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
 
   const convertHeicToFormat = async (
     file: File,
@@ -56,17 +63,15 @@ export const useHeicConversion = () => {
       });
       setProgress(100);
 
-      // Download the file
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${file.name.split('.')[0]}.${
-        format === 'jpg' ? 'jpeg' : format
-      }`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      // Store the file
+      setConvertedFiles((prev) => [
+        ...prev,
+        {
+          blob,
+          originalName: file.name,
+          format: format === 'jpg' ? 'jpeg' : format,
+        },
+      ]);
 
       return;
     } catch (error) {
@@ -78,5 +83,41 @@ export const useHeicConversion = () => {
     }
   };
 
-  return { convertHeicToFormat, isConverting, progress };
+  const downloadFile = (file: ConvertedFile) => {
+    const url = URL.createObjectURL(file.blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${file.originalName.split('.')[0]}.${file.format}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadAll = () => {
+    convertedFiles.forEach((file) => {
+      downloadFile(file);
+    });
+  };
+
+  const removeConvertedFile = (filename: string) => {
+    setConvertedFiles((prev) =>
+      prev.filter((file) => file.originalName !== filename),
+    );
+  };
+
+  const clearConvertedFiles = () => {
+    setConvertedFiles([]);
+  };
+
+  return {
+    convertHeicToFormat,
+    downloadFile,
+    downloadAll,
+    removeConvertedFile,
+    clearConvertedFiles,
+    isConverting,
+    progress,
+    convertedFiles,
+  };
 };

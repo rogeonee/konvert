@@ -12,6 +12,7 @@ import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
 import { filterHeicFiles } from '@/lib/utils';
 import { useHeicConversion } from '@/lib/useHeicConversion';
+import { Download } from 'lucide-react';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -62,8 +63,6 @@ const Home = () => {
     noClick: true,
   });
 
-  const { convertHeicToFormat, isConverting, progress } = useHeicConversion();
-
   const handleAddMore = () => {
     const input = document.getElementById('fileInput') as HTMLInputElement;
 
@@ -87,11 +86,25 @@ const Home = () => {
     input.click();
   };
 
+  const {
+    convertHeicToFormat,
+    isConverting,
+    progress,
+    convertedFiles,
+    downloadAll,
+    downloadFile,
+    removeConvertedFile,
+    clearConvertedFiles,
+  } = useHeicConversion();
+
   const onSubmit = async (data: FormData) => {
     console.log('onSubmit fired');
     const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
 
     try {
+      // Clear any previously converted files
+      clearConvertedFiles();
+
       for (const image of data.images) {
         await convertHeicToFormat(
           image.file,
@@ -100,14 +113,38 @@ const Home = () => {
         );
       }
 
-      // Reset form after all conversions are complete
-      form.reset({
-        quality: 'high',
-        images: [],
-      });
+      // Don't reset the form immediately after conversion
+      // Let user download files first
     } catch (error) {
       console.error('Error during conversion:', error);
     }
+  };
+
+  const handleDownloadAll = () => {
+    downloadAll();
+    // Reset form after downloading
+    form.reset({
+      quality: 'high',
+      images: [],
+    });
+    clearConvertedFiles();
+  };
+
+  const handleRemoveFile = (index: number, filename: string) => {
+    // Remove from fields array
+    remove(index);
+    // Remove from converted files if it exists
+    removeConvertedFile(filename);
+  };
+
+  const handleReset = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    form.reset({
+      quality: 'high',
+      images: [],
+    });
+    clearConvertedFiles();
   };
 
   return (
@@ -130,6 +167,7 @@ const Home = () => {
           >
             <input {...getInputProps()} id="fileInput" accept=".heic" />
             {fields.length === 0 ? (
+              // Empty dropzone
               <div className="flex flex-1 items-center justify-center">
                 <div className="flex flex-col items-center gap-1 text-center">
                   <h3 className="text-2xl font-bold tracking-tight">
@@ -154,27 +192,45 @@ const Home = () => {
                 </div>
               </div>
             ) : (
+              // Added ImageCards
               <div className="flex flex-col gap-2 w-full">
-                {fields.map((field, index) => (
-                  <ImageCard
-                    key={field.id}
-                    filename={field.file.name}
-                    filesize={field.file.size}
-                    onRemove={() => remove(index)}
-                    control={form.control}
-                    name={`images.${index}.format`}
-                    progress={progress}
-                  />
-                ))}
+                {fields.map((field, index) => {
+                  // Find matching converted file by original filename
+                  const convertedFile = convertedFiles.find(
+                    (cf) => cf.originalName === field.file.name,
+                  );
+
+                  return (
+                    <ImageCard
+                      key={field.id}
+                      filename={field.file.name}
+                      filesize={field.file.size}
+                      onRemove={() => handleRemoveFile(index, field.file.name)}
+                      control={form.control}
+                      name={`images.${index}.format`}
+                      progress={progress}
+                      isConverted={!!convertedFile}
+                      onDownload={
+                        convertedFile
+                          ? () => {
+                              downloadFile(convertedFile);
+                            }
+                          : undefined
+                      }
+                    />
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* Submit button */}
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-4">
             <Button
               type="submit"
-              disabled={fields.length === 0 || isConverting}
+              disabled={
+                fields.length === 0 || isConverting || convertedFiles.length > 0
+              }
               className="w-60"
             >
               {isConverting
@@ -183,6 +239,30 @@ const Home = () => {
                 ? 'Konvert all'
                 : 'Konvert'}
             </Button>
+
+            {/* Download button */}
+            {convertedFiles.length > 0 && !isConverting && (
+              <Button
+                type="button"
+                onClick={handleDownloadAll}
+                className="w-60 gap-4"
+              >
+                Download{fields.length > 1 ? ' All' : ''}
+              </Button>
+            )}
+
+            {/* Reset button */}
+            {(fields.length > 0 || convertedFiles.length > 0) && (
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isConverting}
+                onClick={handleReset}
+                className="w-60"
+              >
+                Clear All
+              </Button>
+            )}
           </div>
         </div>
       </form>
