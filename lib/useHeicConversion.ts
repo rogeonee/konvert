@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import decode from 'heic-decode';
+import * as zip from '@zip.js/zip.js';
 
 type ConvertedFile = {
   blob: Blob;
@@ -11,6 +12,32 @@ export const useHeicConversion = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
+  const [zipBlob, setZipBlob] = useState<Blob | null>(null);
+
+  const createZipFile = async (files: ConvertedFile[]) => {
+    const zipWriter = new zip.ZipWriter(new zip.BlobWriter('application/zip'));
+
+    console.log('createZipFIle | files:', files);
+    console.log('createZipFIle | convertedFiles:', convertedFiles);
+
+    try {
+      // Add each file to the zip
+      await Promise.all(
+        files.map(async (file) => {
+          const filename = `${file.originalName.split('.')[0]}.${file.format}`;
+          await zipWriter.add(filename, new zip.BlobReader(file.blob));
+        }),
+      );
+
+      // Close and get the zip blob
+      const blob = await zipWriter.close();
+      setZipBlob(blob);
+      return blob;
+    } catch (error) {
+      console.error('Error creating zip file:', error);
+      throw error;
+    }
+  };
 
   const convertHeicToFormat = async (
     file: File,
@@ -63,15 +90,26 @@ export const useHeicConversion = () => {
       });
       setProgress(100);
 
-      // Store the file
-      setConvertedFiles((prev) => [
-        ...prev,
-        {
-          blob,
-          originalName: file.name,
-          format: format === 'jpg' ? 'jpeg' : format,
-        },
-      ]);
+      // Store the converted file
+      const newFile = {
+        blob,
+        originalName: file.name,
+        format: format === 'jpg' ? 'jpeg' : format,
+      };
+
+      setConvertedFiles((prev) => {
+        const newFiles = [...prev, newFile];
+        // If we now have more than 3 files, create the zip
+        if (newFiles.length > 3) {
+          // We can't use async/await here, so we trigger zip creation on next tick
+          Promise.resolve().then(() => createZipFile(newFiles));
+        }
+        return newFiles;
+      });
+
+      if (convertedFiles.length > 3) {
+        await createZipFile(convertedFiles);
+      }
 
       return;
     } catch (error) {
@@ -94,20 +132,48 @@ export const useHeicConversion = () => {
     URL.revokeObjectURL(url);
   };
 
-  const downloadAll = () => {
-    convertedFiles.forEach((file) => {
-      downloadFile(file);
-    });
+  const downloadAll = async () => {
+    if (convertedFiles.length > 3) {
+      let blob = zipBlob;
+      if (!blob) {
+        // Create new zip if it doesn't exist
+        blob = await createZipFile(convertedFiles);
+      }
+
+      // Download zip file
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'converted_images.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } else {
+      // Download individual files for 3 or fewer files
+      convertedFiles.forEach((file) => {
+        downloadFile(file);
+      });
+    }
   };
 
   const removeConvertedFile = (filename: string) => {
-    setConvertedFiles((prev) =>
-      prev.filter((file) => file.originalName !== filename),
-    );
+    setConvertedFiles((prev) => {
+      const newFiles = prev.filter((file) => file.originalName !== filename);
+      // Clear zip blob if files count drops to 3 or below
+      if (newFiles.length <= 3) {
+        setZipBlob(null);
+      } else {
+        // Recreate zip with remaining files
+        Promise.resolve().then(() => createZipFile(newFiles));
+      }
+      return newFiles;
+    });
   };
 
   const clearConvertedFiles = () => {
     setConvertedFiles([]);
+    setZipBlob(null);
   };
 
   return {
@@ -116,6 +182,7 @@ export const useHeicConversion = () => {
     downloadAll,
     removeConvertedFile,
     clearConvertedFiles,
+    createZipFile,
     isConverting,
     progress,
     convertedFiles,
