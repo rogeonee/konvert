@@ -7,18 +7,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
-import ImageCard from '@/components/image-card';
 import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
+import ImageCard from '@/components/image-card';
 import { filterHeicFiles } from '@/lib/utils';
 import { useHeicConversion } from '@/lib/useHeicConversion';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
+  format: z.string().min(1, 'Format is required'), // Add global format
   images: z.array(
     z.object({
       file: z.any(), // For SSR
-      format: z.string().min(1, 'Format is required'),
     }),
   ),
 });
@@ -30,6 +30,7 @@ const Home = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       quality: 'high',
+      format: 'jpg', // Default format
       images: [],
     },
   });
@@ -45,7 +46,6 @@ const Home = () => {
 
       const newImages = validFiles.map((file) => ({
         file,
-        format: '',
       }));
 
       append(newImages);
@@ -71,10 +71,9 @@ const Home = () => {
 
       const newImages = validFiles.map((file) => ({
         file,
-        format: '',
       }));
 
-      console.log('newImages:', newImages);
+      console.log('handleAddMore | newImages:', newImages);
 
       append(newImages);
 
@@ -107,7 +106,7 @@ const Home = () => {
       for (const image of data.images) {
         await convertHeicToFormat(
           image.file,
-          image.format,
+          data.format,
           qualityMap[data.quality],
         );
       }
@@ -129,7 +128,7 @@ const Home = () => {
   const handleRemoveFile = (index: number, filename: string) => {
     // remove from fields array (ImageCards rendered)
     remove(index);
-    // Remove from converted files if it exists
+    // remove from converted files if it exists
     removeConvertedFile(filename);
   };
 
@@ -139,6 +138,7 @@ const Home = () => {
 
     form.reset({
       quality: 'high',
+      format: 'jpg', // Reset to default
       images: [],
     });
     clearConvertedFiles();
