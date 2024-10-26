@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import decode from 'heic-decode';
 import * as zip from '@zip.js/zip.js';
 
-type ConvertedFile = {
+interface ConvertedFile {
   blob: Blob;
   originalName: string;
   format: string;
-};
+}
 
 export const useHeicConversion = () => {
   const [isConverting, setIsConverting] = useState(false);
@@ -14,51 +14,9 @@ export const useHeicConversion = () => {
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [zipBlob, setZipBlob] = useState<Blob | null>(null);
 
-  const createZipFile = async (files: ConvertedFile[]) => {
-    const zipWriter = new zip.ZipWriter(new zip.BlobWriter('application/zip'));
-
-    console.log('createZipFIle | files:', files);
-    console.log('createZipFIle | convertedFiles:', convertedFiles);
-
-    try {
-      // Add each file to the zip
-      await Promise.all(
-        files.map(async (file) => {
-          const filename = `${file.originalName.split('.')[0]}.${file.format}`;
-          await zipWriter.add(filename, new zip.BlobReader(file.blob));
-        }),
-      );
-
-      // Close and get the zip blob
-      const blob = await zipWriter.close();
-      setZipBlob(blob);
-      return blob;
-    } catch (error) {
-      console.error('Error creating zip file:', error);
-      throw error;
-    }
-  };
-
-  const convertHeicToFormat = async (
-    file: File,
-    format: string,
-    quality: number,
-  ) => {
-    setIsConverting(true);
-    setProgress(10);
-
-    try {
-      // Read file
-      const arrayBuffer = await file.arrayBuffer();
-      setProgress(15);
-
-      // Decode the HEIC file
-      const { width, height, data } = await decode({
-        buffer: new Uint8Array(arrayBuffer),
-      });
-      setProgress(65);
-
-      // Create canvas
+  // create canvas context
+  const createCanvasFromHeicData = useCallback(
+    (width: number, height: number, data: ArrayBuffer) => {
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
@@ -72,13 +30,22 @@ export const useHeicConversion = () => {
         height,
       );
       ctx.putImageData(imageData, 0, 0);
-      setProgress(75);
 
-      // Create blob
+      return canvas;
+    },
+    [],
+  );
+
+  // create blob from canvas
+  const createBlobFromCanvas = useCallback(
+    async (
+      canvas: HTMLCanvasElement,
+      format: string,
+      quality: number,
+    ): Promise<Blob> => {
       const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
 
-      // Convert the canvas to the desired format
-      const blob = await new Promise<Blob>((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         canvas.toBlob(
           (blob) => {
             if (blob) resolve(blob);
@@ -88,93 +55,140 @@ export const useHeicConversion = () => {
           quality,
         );
       });
-      setProgress(100);
+    },
+    [],
+  );
 
-      // Store the converted file
-      const newFile = {
-        blob,
-        originalName: file.name,
-        format: format === 'jpg' ? 'jpeg' : format,
-      };
+  // create zip
+  const createZipFile = useCallback(
+    async (files: ConvertedFile[]): Promise<Blob> => {
+      const zipWriter = new zip.ZipWriter(
+        new zip.BlobWriter('application/zip'),
+      );
 
-      setConvertedFiles((prev) => {
-        const newFiles = [...prev, newFile];
-        // If we now have more than 3 files, create the zip
-        if (newFiles.length > 3) {
-          // We can't use async/await here, so we trigger zip creation on next tick
-          Promise.resolve().then(() => createZipFile(newFiles));
-        }
-        return newFiles;
-      });
+      try {
+        await Promise.all(
+          files.map(async (file) => {
+            const filename = `${file.originalName.split('.')[0]}.${
+              file.format
+            }`;
+            await zipWriter.add(filename, new zip.BlobReader(file.blob));
+          }),
+        );
 
-      if (convertedFiles.length > 3) {
-        await createZipFile(convertedFiles);
+        const blob = await zipWriter.close();
+        setZipBlob(blob);
+
+        return blob;
+      } catch (error) {
+        console.error('Error creating zip file:', error);
+        throw error;
       }
+    },
+    [],
+  );
 
-      return;
-    } catch (error) {
-      console.error('Conversion failed:', error);
-      throw error;
-    } finally {
-      setIsConverting(false);
-      setProgress(0);
-    }
-  };
+  // main conversion flow function
+  const convertHeicToFormat = useCallback(
+    async (file: File, format: string, quality: number): Promise<void> => {
+      setIsConverting(true);
+      setProgress(10);
 
-  const downloadFile = (file: ConvertedFile) => {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        setProgress(15);
+
+        const { width, height, data } = await decode({
+          buffer: new Uint8Array(arrayBuffer),
+        });
+        setProgress(65);
+
+        const canvas = createCanvasFromHeicData(width, height, data);
+        setProgress(75);
+
+        const blob = await createBlobFromCanvas(canvas, format, quality);
+        setProgress(100);
+
+        const newFile = {
+          blob,
+          originalName: file.name,
+          format: format === 'jpg' ? 'jpeg' : format,
+        };
+
+        setConvertedFiles((prev) => {
+          const newFiles = [...prev, newFile];
+          if (newFiles.length > 3) {
+            void createZipFile(newFiles);
+          }
+
+          return newFiles;
+        });
+      } catch (error) {
+        console.error('Conversion failed:', error);
+        throw error;
+      } finally {
+        setIsConverting(false);
+        setProgress(0);
+      }
+    },
+    [createCanvasFromHeicData, createBlobFromCanvas, createZipFile],
+  );
+
+  const downloadFile = useCallback((file: ConvertedFile) => {
     const url = URL.createObjectURL(file.blob);
     const a = document.createElement('a');
+
     a.href = url;
     a.download = `${file.originalName.split('.')[0]}.${file.format}`;
     document.body.appendChild(a);
     a.click();
+
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
+  }, []);
 
-  const downloadAll = async () => {
+  const downloadAll = useCallback(async () => {
+    // for more than 3 converted files, create a zip
     if (convertedFiles.length > 3) {
-      let blob = zipBlob;
-      if (!blob) {
-        // Create new zip if it doesn't exist
-        blob = await createZipFile(convertedFiles);
-      }
-
-      // Download zip file
+      const blob = zipBlob || (await createZipFile(convertedFiles));
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
+
       a.href = url;
       a.download = 'converted_images.zip';
       document.body.appendChild(a);
       a.click();
+
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } else {
-      // Download individual files for 3 or fewer files
-      convertedFiles.forEach((file) => {
-        downloadFile(file);
-      });
+      // for 3 or less, download individually
+      convertedFiles.forEach(downloadFile);
     }
-  };
+  }, [convertedFiles, zipBlob, createZipFile, downloadFile]);
 
-  const removeConvertedFile = (filename: string) => {
-    setConvertedFiles((prev) => {
-      const newFiles = prev.filter((file) => file.originalName !== filename);
-      // Clear zip blob if files count drops to 3 or below
-      if (newFiles.length <= 3) {
-        setZipBlob(null);
-      } else {
-        // Recreate zip with remaining files
-        Promise.resolve().then(() => createZipFile(newFiles));
-      }
-      return newFiles;
-    });
-  };
+  const removeConvertedFile = useCallback(
+    (filename: string) => {
+      setConvertedFiles((prev) => {
+        const newFiles = prev.filter((file) => file.originalName !== filename);
+        // remove zip if it is less than 4 converted
+        if (newFiles.length <= 3) {
+          setZipBlob(null);
+        } else {
+          // recreate zip without deleted files (flow to be improved)
+          void createZipFile(newFiles);
+        }
 
-  const clearConvertedFiles = () => {
+        return newFiles;
+      });
+    },
+    [createZipFile],
+  );
+
+  const clearConvertedFiles = useCallback(() => {
     setConvertedFiles([]);
     setZipBlob(null);
-  };
+  }, []);
 
   return {
     convertHeicToFormat,

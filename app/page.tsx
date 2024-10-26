@@ -12,13 +12,12 @@ import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
 import { filterHeicFiles } from '@/lib/utils';
 import { useHeicConversion } from '@/lib/useHeicConversion';
-import { Download } from 'lucide-react';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
   images: z.array(
     z.object({
-      file: z.any(), // For server-side rendering
+      file: z.any(), // For SSR
       format: z.string().min(1, 'Format is required'),
     }),
   ),
@@ -112,9 +111,6 @@ const Home = () => {
           qualityMap[data.quality],
         );
       }
-
-      // Don't reset the form immediately after conversion
-      // Let user download files first
     } catch (error) {
       console.error('Error during conversion:', error);
     }
@@ -122,7 +118,7 @@ const Home = () => {
 
   const handleDownloadAll = () => {
     downloadAll();
-    // Reset form after downloading
+    // reset form after downloading
     form.reset({
       quality: 'high',
       images: [],
@@ -131,7 +127,7 @@ const Home = () => {
   };
 
   const handleRemoveFile = (index: number, filename: string) => {
-    // Remove from fields array
+    // remove from fields array (ImageCards rendered)
     remove(index);
     // Remove from converted files if it exists
     removeConvertedFile(filename);
@@ -140,6 +136,7 @@ const Home = () => {
   const handleReset = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
     form.reset({
       quality: 'high',
       images: [],
@@ -195,7 +192,7 @@ const Home = () => {
               // Added ImageCards
               <div className="flex flex-col gap-2 w-full">
                 {fields.map((field, index) => {
-                  // Find matching converted file by original filename
+                  // match converted file by original filename
                   const convertedFile = convertedFiles.find(
                     (cf) => cf.originalName === field.file.name,
                   );
