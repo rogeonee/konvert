@@ -15,7 +15,7 @@ const Header: React.FC<HeaderProps> = ({ fields, control, handleAddMore }) => {
     <div className="flex flex-col gap-4 sm:flex-row justify-between sm:items-center sm:gap-8">
       <div className="flex flex-col md:flex-row items-center gap-4 w-full">
         <div className="flex w-full md:w-auto items-center justify-start gap-2">
-          <h1 className="text-lg font-semibold md:text-2xl">Convert in</h1>
+          <h1 className="text-lg font-semibold md:text-2xl">Konvert in</h1>
           <SelectQuality control={control} name="quality" />
         </div>
       </div>
