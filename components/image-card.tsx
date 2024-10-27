@@ -40,10 +40,28 @@ const ImageCard: React.FC<ImageProps> = ({
     return (size / 1048576).toFixed(2) + ' MB';
   };
 
+  // 21 large
+  // 20 medium
+  // 14 small
   // Truncate the filename on mobile
   const truncateFilename = (name: string) => {
-    const maxLength = 6; // 6 for filename + 5 for format
-    return name.length > maxLength ? name.slice(0, maxLength - 3) + '..' : name;
+    let maxLength;
+
+    switch (isMobile) {
+      case 'large':
+        maxLength = 21;
+        break;
+      case 'medium':
+        maxLength = 19;
+        break;
+      case 'small':
+        maxLength = 14;
+        break;
+      default:
+        maxLength = 21; // default for larger screens
+    }
+
+    return name.length > maxLength ? name.slice(0, maxLength - 2) + '..' : name;
   };
 
   // Split the filename and format
@@ -66,7 +84,7 @@ const ImageCard: React.FC<ImageProps> = ({
       <CardHeader className="flex-1">
         <div>
           <CardTitle className="text-md font-medium sm:text-md md:text-lg">
-            {isMobile
+            {isMobile !== 'not-mobile'
               ? truncateFilename(namePart) + formatPart
               : namePart + formatPart}{' '}
           </CardTitle>

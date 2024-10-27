@@ -41,7 +41,12 @@ const SelectQuality: React.FC<SelectQualityProps> = ({ control, name }) => {
           <SelectTrigger className="w-[150px] [&_[data-description]]:hidden">
             <SelectValue placeholder="Select quality" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent
+            ref={(ref) => {
+              if (!ref) return;
+              ref.ontouchstart = (e) => e.preventDefault();
+            }}
+          >
             {qualities.map((quality) => (
               <SelectItem key={quality.value} value={quality.value}>
                 {' '}

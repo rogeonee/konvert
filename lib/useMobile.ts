@@ -1,11 +1,25 @@
 import { useState, useEffect } from 'react';
 
 const useMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [mobileSize, setMobileSize] = useState<string>('');
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 640); // Tailwind's 'sm' breakpoint 640px
+      const width = window.innerWidth;
+
+      if (width < 400) {
+        setMobileSize('small');
+        console.log('useMobile | small');
+      } else if (width >= 400 && width < 420) {
+        setMobileSize('medium');
+        console.log('useMobile | medium');
+      } else if (width >= 420 && width < 640) {
+        setMobileSize('large');
+        console.log('useMobile | large');
+      } else {
+        setMobileSize('not-mobile'); // Not a mobile
+        console.log('useMobile | not-mobile');
+      }
     };
 
     handleResize();
@@ -16,7 +30,7 @@ const useMobile = () => {
     };
   }, []);
 
-  return isMobile;
+  return mobileSize;
 };
 
 export default useMobile;
