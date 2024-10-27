@@ -14,12 +14,12 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ fields, control, handleAddMore }) => {
   return (
     <div className="flex flex-col gap-4 sm:flex-row justify-between sm:items-center sm:gap-8">
-      <div className="flex flex-col md:flex-row items-center gap-2 w-full">
-        <div className="flex w-full md:w-auto items-center justify-start gap-2">
+      <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+        <div className="flex w-full md:w-auto items-center justify-start gap-4">
           <h1 className="text-lg font-semibold md:text-2xl">Konvert in</h1>
           <SelectQuality control={control} name="quality" />
         </div>
-        <div className="flex w-full md:w-auto items-center justify-start gap-2">
+        <div className="flex w-full md:w-auto items-center justify-start gap-4">
           <h1 className="text-lg font-semibold md:text-2xl">to</h1>
           <SelectFormat control={control} name="format" />
         </div>
