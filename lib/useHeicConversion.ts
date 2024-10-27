@@ -8,11 +8,22 @@ interface ConvertedFile {
   format: string;
 }
 
+interface FileProgress {
+  [filename: string]: number;
+}
+
 export const useHeicConversion = () => {
   const [isConverting, setIsConverting] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [progressMap, setProgressMap] = useState<FileProgress>({});
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [zipBlob, setZipBlob] = useState<Blob | null>(null);
+
+  const updateProgress = useCallback((filename: string, progress: number) => {
+    setProgressMap((prev) => ({
+      ...prev,
+      [filename]: progress,
+    }));
+  }, []);
 
   // create canvas context
   const createCanvasFromHeicData = useCallback(
@@ -92,28 +103,29 @@ export const useHeicConversion = () => {
   const convertHeicToFormat = useCallback(
     async (file: File, format: string, quality: number): Promise<void> => {
       setIsConverting(true);
-      setProgress(10);
+      updateProgress(file.name, 5);
 
       try {
         const arrayBuffer = await file.arrayBuffer();
-        setProgress(15);
+        updateProgress(file.name, 20);
 
         const { width, height, data } = await decode({
           buffer: new Uint8Array(arrayBuffer),
         });
-        setProgress(65);
+        updateProgress(file.name, 50);
 
         const canvas = createCanvasFromHeicData(width, height, data);
-        setProgress(75);
+        updateProgress(file.name, 70);
 
         const blob = await createBlobFromCanvas(canvas, format, quality);
-        setProgress(100);
+        updateProgress(file.name, 75);
 
         const newFile = {
           blob,
           originalName: file.name,
           format: format === 'jpg' ? 'jpeg' : format,
         };
+        updateProgress(file.name, 80);
 
         setConvertedFiles((prev) => {
           const newFiles = [...prev, newFile];
@@ -123,15 +135,21 @@ export const useHeicConversion = () => {
 
           return newFiles;
         });
+        updateProgress(file.name, 90);
       } catch (error) {
         console.error('Conversion failed:', error);
         throw error;
       } finally {
         setIsConverting(false);
-        setProgress(0);
+        updateProgress(file.name, 100);
       }
     },
-    [createCanvasFromHeicData, createBlobFromCanvas, createZipFile],
+    [
+      createCanvasFromHeicData,
+      createBlobFromCanvas,
+      createZipFile,
+      updateProgress,
+    ],
   );
 
   const downloadFile = useCallback((file: ConvertedFile) => {
@@ -171,15 +189,21 @@ export const useHeicConversion = () => {
     (filename: string) => {
       setConvertedFiles((prev) => {
         const newFiles = prev.filter((file) => file.originalName !== filename);
-        // remove zip if it is less than 4 converted
+
         if (newFiles.length <= 3) {
           setZipBlob(null);
         } else {
-          // recreate zip without deleted files (flow to be improved)
           void createZipFile(newFiles);
         }
 
         return newFiles;
+      });
+
+      // Clean up progress for removed file
+      setProgressMap((prev) => {
+        const newMap = { ...prev };
+        delete newMap[filename];
+        return newMap;
       });
     },
     [createZipFile],
@@ -188,6 +212,7 @@ export const useHeicConversion = () => {
   const clearConvertedFiles = useCallback(() => {
     setConvertedFiles([]);
     setZipBlob(null);
+    setProgressMap({});
   }, []);
 
   return {
@@ -198,7 +223,7 @@ export const useHeicConversion = () => {
     clearConvertedFiles,
     createZipFile,
     isConverting,
-    progress,
+    progressMap,
     convertedFiles,
   };
 };

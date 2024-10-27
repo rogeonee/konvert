@@ -62,32 +62,10 @@ const Home = () => {
     noClick: true,
   });
 
-  const handleAddMore = () => {
-    const input = document.getElementById('fileInput') as HTMLInputElement;
-
-    input.onchange = (event: Event) => {
-      const files = Array.from(input.files || []);
-      const validFiles = filterHeicFiles(files);
-
-      const newImages = validFiles.map((file) => ({
-        file,
-      }));
-
-      console.log('handleAddMore | newImages:', newImages);
-
-      append(newImages);
-
-      // Clear the file input value to prevent duplicates
-      input.value = '';
-    };
-
-    input.click();
-  };
-
   const {
     convertHeicToFormat,
     isConverting,
-    progress,
+    progressMap,
     convertedFiles,
     downloadAll,
     downloadFile,
@@ -113,6 +91,28 @@ const Home = () => {
     } catch (error) {
       console.error('Error during conversion:', error);
     }
+  };
+
+  const handleAddMore = () => {
+    const input = document.getElementById('fileInput') as HTMLInputElement;
+
+    input.onchange = (event: Event) => {
+      const files = Array.from(input.files || []);
+      const validFiles = filterHeicFiles(files);
+
+      const newImages = validFiles.map((file) => ({
+        file,
+      }));
+
+      console.log('handleAddMore | newImages:', newImages);
+
+      append(newImages);
+
+      // Clear the file input value to prevent duplicates
+      input.value = '';
+    };
+
+    input.click();
   };
 
   const handleDownloadAll = () => {
@@ -205,7 +205,7 @@ const Home = () => {
                       onRemove={() => handleRemoveFile(index, field.file.name)}
                       control={form.control}
                       name={`images.${index}.format`}
-                      progress={progress}
+                      progress={progressMap[field.file.name] || 0}
                       isConverted={!!convertedFile}
                       onDownload={
                         convertedFile
@@ -221,21 +221,23 @@ const Home = () => {
             )}
           </div>
 
-          {/* Submit button */}
+          {/* Buttons */}
           <div className="flex justify-center gap-4">
-            <Button
-              type="submit"
-              disabled={
-                fields.length === 0 || isConverting || convertedFiles.length > 0
-              }
-              className="w-60"
-            >
-              {isConverting
-                ? 'Konverting...'
-                : fields.length > 1
-                ? 'Konvert all'
-                : 'Konvert'}
-            </Button>
+            {/* Submit button */}
+            {(convertedFiles.length === 0 ||
+              convertedFiles.length < fields.length) && (
+              <Button
+                type="submit"
+                disabled={fields.length === 0 || isConverting}
+                className="w-60"
+              >
+                {isConverting
+                  ? 'Konverting...'
+                  : fields.length > 1
+                  ? 'Konvert all'
+                  : 'Konvert'}
+              </Button>
+            )}
 
             {/* Download button */}
             {convertedFiles.length > 0 && !isConverting && (

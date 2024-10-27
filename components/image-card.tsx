@@ -10,6 +10,7 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Progress } from './ui/progress';
 import useMobile from '@/lib/useMobile';
 
 type ImageProps = {
@@ -17,7 +18,7 @@ type ImageProps = {
   filesize: number;
   control: Control<any>;
   name: string;
-  progress: number;
+  progress?: number;
   onRemove: () => void;
   onDownload?: () => void;
   isConverted?: boolean;
@@ -26,12 +27,13 @@ type ImageProps = {
 const ImageCard: React.FC<ImageProps> = ({
   filename,
   filesize,
-  progress,
+  progress = 0,
   onRemove,
   onDownload,
   isConverted,
 }) => {
   const isMobile = useMobile();
+  // const progress = 80;
 
   // Format the file size
   const formatFileSize = (size: number) => {
@@ -73,14 +75,9 @@ const ImageCard: React.FC<ImageProps> = ({
 
   return (
     <Card className="relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4">
-      <div
-        className="absolute bottom-0 left-[4px] h-0.5 bg-green-500"
-        style={{
-          width: `${progress}%`,
-          borderBottomLeftRadius: '0.1rem', // Match Card's border radius
-          borderBottomRightRadius: `${progress === 100 ? '0.5rem' : '0'}`, // Apply only when progress is 100%
-        }}
-      ></div>
+      {progress > 0 && (
+        <Progress value={progress} className="animate-progress-pulse" />
+      )}
       <CardHeader className="flex-1">
         <div>
           <CardTitle className="text-md font-medium sm:text-md md:text-lg">
@@ -96,6 +93,7 @@ const ImageCard: React.FC<ImageProps> = ({
           <Button
             variant="outline"
             size="icon"
+            className="hover:border-[#029220]"
             onClick={(e) => {
               e.preventDefault(); // Prevent form submission
               e.stopPropagation(); // Stop event bubbling
@@ -109,7 +107,7 @@ const ImageCard: React.FC<ImageProps> = ({
         <Button
           variant="outline"
           size="icon"
-          className="hover:border-red-500"
+          className="hover:border-[#A80115]"
           onClick={onRemove}
         >
           <X />
