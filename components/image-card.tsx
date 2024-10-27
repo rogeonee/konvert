@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Control, Controller, useFormState } from 'react-hook-form';
+import { Control } from 'react-hook-form';
 import { Download, X } from 'lucide-react';
-import SelectFormat from './select-format';
 import {
   Card,
   CardHeader,
@@ -27,15 +26,12 @@ type ImageProps = {
 const ImageCard: React.FC<ImageProps> = ({
   filename,
   filesize,
-  control,
-  name,
   progress,
   onRemove,
   onDownload,
   isConverted,
 }) => {
   const isMobile = useMobile();
-  const { errors } = useFormState({ control });
 
   // Format the file size
   const formatFileSize = (size: number) => {
@@ -78,18 +74,6 @@ const ImageCard: React.FC<ImageProps> = ({
         </div>
       </CardHeader>
       <div className="flex items-center gap-4">
-        <Controller
-          name={name}
-          control={control}
-          rules={{ required: true }}
-          render={({ field, fieldState }) => (
-            <SelectFormat
-              value={field.value}
-              onChange={field.onChange}
-              error={fieldState.invalid}
-            />
-          )}
-        />
         {isConverted && onDownload && (
           <Button
             variant="outline"
@@ -97,6 +81,7 @@ const ImageCard: React.FC<ImageProps> = ({
             onClick={(e) => {
               e.preventDefault(); // Prevent form submission
               e.stopPropagation(); // Stop event bubbling
+
               onDownload();
             }}
           >
