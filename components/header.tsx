@@ -9,23 +9,37 @@ type HeaderProps = {
   fields: FieldArrayWithId<FormData, 'images'>[];
   control: Control<FormData>;
   handleAddMore: () => void;
+  currentState: 'start-emp' | 'start-add' | 'converse' | 'end' | 'impossible';
 };
 
-const Header: React.FC<HeaderProps> = ({ fields, control, handleAddMore }) => {
+const Header: React.FC<HeaderProps> = ({
+  fields,
+  control,
+  handleAddMore,
+  currentState = 'start-emp',
+}) => {
   return (
     <div className="flex flex-col gap-4 sm:flex-row justify-between sm:items-center sm:gap-8">
       <div className="flex flex-col md:flex-row items-center gap-4 w-full">
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
           <h1 className="text-lg font-semibold md:text-2xl">Konvert in</h1>
-          <SelectQuality control={control} name="quality" />
+          <SelectQuality
+            control={control}
+            name="quality"
+            disabled={currentState === 'converse'}
+          />
         </div>
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
           <h1 className="text-lg font-semibold md:text-2xl">to</h1>
-          <SelectFormat control={control} name="format" />
+          <SelectFormat
+            control={control}
+            name="format"
+            disabled={currentState === 'converse'}
+          />
         </div>
       </div>
-      {fields.length > 0 && (
-        <div className="flex md:justify-end">
+      {currentState === 'start-add' && (
+        <div className="flex md:justify-end gap-4">
           <Button
             variant="default"
             onClick={(e) => {
@@ -35,6 +49,9 @@ const Header: React.FC<HeaderProps> = ({ fields, control, handleAddMore }) => {
             type="button"
           >
             Add more...
+          </Button>
+          <Button variant="outline" type="button">
+            Clear All
           </Button>
         </div>
       )}

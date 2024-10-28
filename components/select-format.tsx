@@ -8,6 +8,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { DiscAlbum } from 'lucide-react';
 
 const formats = [
   { value: 'jpg', label: 'JPG' },
@@ -20,19 +21,28 @@ const formats = [
 interface SelectFormatProps {
   control: Control<any>;
   name: string;
+  disabled?: boolean;
 }
 
-const SelectFormat: React.FC<SelectFormatProps> = ({ control, name }) => {
+const SelectFormat: React.FC<SelectFormatProps> = ({
+  control,
+  name,
+  disabled,
+}) => {
   return (
     <Controller
       name={name}
       control={control}
       rules={{ required: true }}
       render={({ field, fieldState }) => (
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <Select
+          onValueChange={field.onChange}
+          defaultValue={field.value}
+          disabled={disabled}
+        >
           <SelectTrigger
             className={cn(
-              'w-[120px]',
+              'w-[100px]',
               fieldState.invalid && 'border-red-500 focus:ring-red-500',
             )}
           >

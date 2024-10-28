@@ -144,6 +144,21 @@ const Home = () => {
     clearConvertedFiles();
   };
 
+  const getCurrentState = () => {
+    if (fields.length === 0) {
+      return 'start-emp';
+    } else if (!isConverting && convertedFiles.length === 0) {
+      return 'start-add';
+    } else if (isConverting) {
+      return 'converse';
+    } else if (!isConverting && convertedFiles.length === fields.length) {
+      return 'end';
+    }
+
+    return 'impossible';
+  };
+  const currentState = getCurrentState();
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -153,6 +168,7 @@ const Home = () => {
             fields={fields}
             handleAddMore={handleAddMore}
             control={form.control}
+            currentState={currentState}
           />
 
           {/* Dropzone */}
@@ -207,6 +223,7 @@ const Home = () => {
                       name={`images.${index}.format`}
                       progress={progressMap[field.file.name] || 0}
                       isConverted={!!convertedFile}
+                      currentState={currentState}
                       onDownload={
                         convertedFile
                           ? () => {
@@ -224,11 +241,10 @@ const Home = () => {
           {/* Buttons */}
           <div className="flex justify-center gap-4">
             {/* Submit button */}
-            {(convertedFiles.length === 0 ||
-              convertedFiles.length < fields.length) && (
+            {['start-emp', 'start-add', 'converse'].includes(currentState) && (
               <Button
                 type="submit"
-                disabled={fields.length === 0 || isConverting}
+                disabled={['start-emp', 'converse'].includes(currentState)}
                 className="w-60"
               >
                 {isConverting
@@ -240,7 +256,7 @@ const Home = () => {
             )}
 
             {/* Download button */}
-            {convertedFiles.length > 0 && !isConverting && (
+            {['end'].includes(currentState) && (
               <Button
                 type="button"
                 onClick={handleDownloadAll}
@@ -250,8 +266,8 @@ const Home = () => {
               </Button>
             )}
 
-            {/* Reset button */}
-            {(fields.length > 0 || convertedFiles.length > 0) && (
+            {/* Clear button */}
+            {['impossible'].includes(currentState) && (
               <Button
                 type="button"
                 variant="outline"

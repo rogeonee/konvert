@@ -22,6 +22,7 @@ type ImageProps = {
   onRemove: () => void;
   onDownload?: () => void;
   isConverted?: boolean;
+  currentState: 'start-emp' | 'start-add' | 'converse' | 'end' | 'impossible';
 };
 
 const ImageCard: React.FC<ImageProps> = ({
@@ -31,6 +32,7 @@ const ImageCard: React.FC<ImageProps> = ({
   onRemove,
   onDownload,
   isConverted,
+  currentState = 'start-add',
 }) => {
   const isMobile = useMobile();
   // const progress = 80;
@@ -94,6 +96,7 @@ const ImageCard: React.FC<ImageProps> = ({
             variant="outline"
             size="icon"
             className="hover:border-[#029220]"
+            disabled={currentState === 'converse'}
             onClick={(e) => {
               e.preventDefault(); // Prevent form submission
               e.stopPropagation(); // Stop event bubbling
@@ -108,6 +111,7 @@ const ImageCard: React.FC<ImageProps> = ({
           variant="outline"
           size="icon"
           className="hover:border-[#A80115]"
+          disabled={currentState === 'converse'}
           onClick={onRemove}
         >
           <X />
