@@ -9,6 +9,7 @@ type HeaderProps = {
   fields: FieldArrayWithId<FormData, 'images'>[];
   control: Control<FormData>;
   handleAddMore: () => void;
+  handleReset: (e: React.MouseEvent) => void;
   currentState: 'start-emp' | 'start-add' | 'converse' | 'end' | 'impossible';
 };
 
@@ -16,30 +17,49 @@ const Header: React.FC<HeaderProps> = ({
   fields,
   control,
   handleAddMore,
+  handleReset,
   currentState = 'start-emp',
 }) => {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row justify-between sm:items-center sm:gap-8">
+    <div className="flex flex-row justify-between sm:items-center sm:gap-8">
+      {/* Selects */}
       <div className="flex flex-col md:flex-row items-center gap-4 w-full">
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
-          <h1 className="text-lg font-semibold md:text-2xl">Konvert in</h1>
-          <SelectQuality
-            control={control}
-            name="quality"
-            disabled={currentState === 'converse'}
-          />
-        </div>
-        <div className="flex w-full md:w-auto items-center justify-start gap-4">
-          <h1 className="text-lg font-semibold md:text-2xl">to</h1>
+          <h1 className="text-lg font-semibold md:text-2xl whitespace-nowrap">
+            Konvert to
+          </h1>
           <SelectFormat
             control={control}
             name="format"
             disabled={currentState === 'converse'}
           />
         </div>
+        <div className="flex w-full md:w-auto items-center justify-start gap-4">
+          <h1 className="text-lg font-semibold md:text-2xl whitespace-nowrap">
+            in
+          </h1>
+          <SelectQuality
+            control={control}
+            name="quality"
+            disabled={currentState === 'converse'}
+          />
+        </div>
       </div>
-      {currentState === 'start-add' && (
-        <div className="flex md:justify-end gap-4">
+
+      {/* Buttons */}
+      <div className="flex flex-col gap-4 items-end md:flex-row sm:justify-end md:items-center w-full md:w-auto">
+        {currentState !== 'start-emp' && (
+          <Button
+            variant="outline"
+            onClick={handleReset}
+            type="button"
+            disabled={currentState === 'converse'}
+            className="w-[70px] hover:border-[#A80115]"
+          >
+            Clear
+          </Button>
+        )}
+        {currentState === 'start-add' && (
           <Button
             variant="default"
             onClick={(e) => {
@@ -47,14 +67,12 @@ const Header: React.FC<HeaderProps> = ({
               handleAddMore();
             }}
             type="button"
+            className="w-[100px]"
           >
-            Add more...
+            Add more
           </Button>
-          <Button variant="outline" type="button">
-            Clear All
-          </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

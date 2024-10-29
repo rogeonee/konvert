@@ -167,6 +167,7 @@ const Home = () => {
           <Header
             fields={fields}
             handleAddMore={handleAddMore}
+            handleReset={handleReset}
             control={form.control}
             currentState={currentState}
           />
@@ -263,19 +264,6 @@ const Home = () => {
                 className="w-60 gap-4"
               >
                 Download{fields.length > 1 ? ' All' : ''}
-              </Button>
-            )}
-
-            {/* Clear button */}
-            {['impossible'].includes(currentState) && (
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isConverting}
-                onClick={handleReset}
-                className="w-60"
-              >
-                Clear All
               </Button>
             )}
           </div>

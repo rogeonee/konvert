@@ -12,12 +12,12 @@ const qualities = [
   {
     value: 'high',
     label: 'High Quality',
-    description: 'As sharp as possible.',
+    description: 'All of it.',
   },
   {
     value: 'medium',
     label: 'Balanced',
-    description: 'Neither fish nor meat.',
+    description: `It\'s okay.`,
   },
   {
     value: 'low',
@@ -47,7 +47,7 @@ const SelectQuality: React.FC<SelectQualityProps> = ({
           defaultValue={field.value}
           disabled={disabled}
         >
-          <SelectTrigger className="w-[150px] [&_[data-description]]:hidden">
+          <SelectTrigger className="w-[140px] [&_[data-description]]:hidden">
             <SelectValue placeholder="Select quality" />
           </SelectTrigger>
           <SelectContent

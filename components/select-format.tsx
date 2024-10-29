@@ -40,19 +40,15 @@ const SelectFormat: React.FC<SelectFormatProps> = ({
           defaultValue={field.value}
           disabled={disabled}
         >
-          <SelectTrigger
-            className={cn(
-              'w-[100px]',
-              fieldState.invalid && 'border-red-500 focus:ring-red-500',
-            )}
-          >
-            <SelectValue placeholder="Convert to" defaultValue="jpg" />
+          <SelectTrigger className="w-[100px]">
+            <SelectValue defaultValue="jpg" />
           </SelectTrigger>
           <SelectContent
             ref={(ref) => {
               if (!ref) return;
               ref.ontouchstart = (e) => e.preventDefault();
             }}
+            className="w-full"
           >
             {formats.map((format) => (
               <SelectItem key={format.value} value={format.value}>
