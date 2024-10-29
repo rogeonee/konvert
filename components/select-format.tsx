@@ -1,4 +1,5 @@
 import React from 'react';
+import { Control, Controller } from 'react-hook-form';
 import {
   Select,
   SelectTrigger,
@@ -7,6 +8,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { DiscAlbum } from 'lucide-react';
 
 const formats = [
   { value: 'jpg', label: 'JPG' },
@@ -17,35 +19,46 @@ const formats = [
 ];
 
 interface SelectFormatProps {
-  value: string;
-  onChange: (value: string) => void;
-  error?: boolean;
+  control: Control<any>;
+  name: string;
+  disabled?: boolean;
 }
 
 const SelectFormat: React.FC<SelectFormatProps> = ({
-  value,
-  onChange,
-  error,
+  control,
+  name,
+  disabled,
 }) => {
   return (
-    <Select onValueChange={onChange}>
-      <SelectTrigger
-        id="format"
-        className={cn(
-          'w-[120px]',
-          error && 'border-red-500 focus:ring-red-500',
-        )}
-      >
-        <SelectValue placeholder="Convert to" defaultValue="jpg" />
-      </SelectTrigger>
-      <SelectContent>
-        {formats.map((format) => (
-          <SelectItem key={format.value} value={format.value}>
-            <p className="font-medium text-foreground">{format.label}</p>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required: true }}
+      render={({ field, fieldState }) => (
+        <Select
+          onValueChange={field.onChange}
+          defaultValue={field.value}
+          disabled={disabled}
+        >
+          <SelectTrigger className="w-[100px]">
+            <SelectValue defaultValue="jpg" />
+          </SelectTrigger>
+          <SelectContent
+            ref={(ref) => {
+              if (!ref) return;
+              ref.ontouchstart = (e) => e.preventDefault();
+            }}
+            className="w-full"
+          >
+            {formats.map((format) => (
+              <SelectItem key={format.value} value={format.value}>
+                <p className="font-medium text-foreground">{format.label}</p>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+    />
   );
 };
 

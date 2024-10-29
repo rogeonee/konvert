@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Control, Controller, useFormState } from 'react-hook-form';
+import { Control } from 'react-hook-form';
+import { Download, X } from 'lucide-react';
 import {
   Card,
   CardHeader,
@@ -9,8 +10,7 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import SelectFormat from './select-format';
-import { X } from 'lucide-react';
+import { Progress } from './ui/progress';
 import useMobile from '@/lib/useMobile';
 
 type ImageProps = {
@@ -18,20 +18,24 @@ type ImageProps = {
   filesize: number;
   control: Control<any>;
   name: string;
-  progress: number;
+  progress?: number;
   onRemove: () => void;
+  onDownload?: () => void;
+  isConverted?: boolean;
+  currentState: 'start-emp' | 'start-add' | 'converse' | 'end' | 'impossible';
 };
 
 const ImageCard: React.FC<ImageProps> = ({
   filename,
   filesize,
-  control,
-  name,
-  progress,
+  progress = 0,
   onRemove,
+  onDownload,
+  isConverted,
+  currentState = 'start-add',
 }) => {
   const isMobile = useMobile();
-  const { errors } = useFormState({ control });
+  // const progress = 80;
 
   // Format the file size
   const formatFileSize = (size: number) => {
@@ -40,10 +44,28 @@ const ImageCard: React.FC<ImageProps> = ({
     return (size / 1048576).toFixed(2) + ' MB';
   };
 
+  // 21 large
+  // 20 medium
+  // 14 small
   // Truncate the filename on mobile
   const truncateFilename = (name: string) => {
-    const maxLength = 6; // 6 for filename + 5 for format
-    return name.length > maxLength ? name.slice(0, maxLength - 3) + '..' : name;
+    let maxLength;
+
+    switch (isMobile) {
+      case 'large':
+        maxLength = 21;
+        break;
+      case 'medium':
+        maxLength = 19;
+        break;
+      case 'small':
+        maxLength = 14;
+        break;
+      default:
+        maxLength = 21; // default for larger screens
+    }
+
+    return name.length > maxLength ? name.slice(0, maxLength - 2) + '..' : name;
   };
 
   // Split the filename and format
@@ -55,18 +77,13 @@ const ImageCard: React.FC<ImageProps> = ({
 
   return (
     <Card className="relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4">
-      <div
-        className="absolute bottom-0 left-[4px] h-0.5 bg-green-500"
-        style={{
-          width: `${progress}%`,
-          borderBottomLeftRadius: '0.1rem', // Match Card's border radius
-          borderBottomRightRadius: `${progress === 100 ? '0.5rem' : '0'}`, // Apply only when progress is 100%
-        }}
-      ></div>
+      {progress > 0 && (
+        <Progress value={progress} className="animate-progress-pulse" />
+      )}
       <CardHeader className="flex-1">
         <div>
           <CardTitle className="text-md font-medium sm:text-md md:text-lg">
-            {isMobile
+            {isMobile !== 'not-mobile'
               ? truncateFilename(namePart) + formatPart
               : namePart + formatPart}{' '}
           </CardTitle>
@@ -74,22 +91,27 @@ const ImageCard: React.FC<ImageProps> = ({
         </div>
       </CardHeader>
       <div className="flex items-center gap-4">
-        <Controller
-          name={name}
-          control={control}
-          rules={{ required: true }}
-          render={({ field, fieldState }) => (
-            <SelectFormat
-              value={field.value}
-              onChange={field.onChange}
-              error={fieldState.invalid}
-            />
-          )}
-        />
+        {isConverted && onDownload && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="hover:border-[#029220]"
+            disabled={currentState === 'converse'}
+            onClick={(e) => {
+              e.preventDefault(); // Prevent form submission
+              e.stopPropagation(); // Stop event bubbling
+
+              onDownload();
+            }}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+        )}
         <Button
           variant="outline"
           size="icon"
-          className="hover:border-red-500"
+          className="hover:border-[#A80115]"
+          disabled={currentState === 'converse'}
           onClick={onRemove}
         >
           <X />

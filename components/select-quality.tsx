@@ -12,12 +12,12 @@ const qualities = [
   {
     value: 'high',
     label: 'High Quality',
-    description: 'As sharp as possible.',
+    description: 'All of it.',
   },
   {
     value: 'medium',
     label: 'Balanced',
-    description: 'Neither fish nor meat.',
+    description: `It\'s okay.`,
   },
   {
     value: 'low',
@@ -29,22 +29,35 @@ const qualities = [
 interface SelectQualityProps {
   control: Control<any>;
   name: string;
+  disabled?: boolean;
 }
 
-const SelectQuality: React.FC<SelectQualityProps> = ({ control, name }) => {
+const SelectQuality: React.FC<SelectQualityProps> = ({
+  control,
+  name,
+  disabled,
+}) => {
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <SelectTrigger className="w-[150px] [&_[data-description]]:hidden">
+        <Select
+          onValueChange={field.onChange}
+          defaultValue={field.value}
+          disabled={disabled}
+        >
+          <SelectTrigger className="w-[140px] [&_[data-description]]:hidden">
             <SelectValue placeholder="Select quality" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent
+            ref={(ref) => {
+              if (!ref) return;
+              ref.ontouchstart = (e) => e.preventDefault();
+            }}
+          >
             {qualities.map((quality) => (
               <SelectItem key={quality.value} value={quality.value}>
-                {' '}
                 <div className="flex items-start gap-3 text-muted-foreground">
                   <div className="grid gap-0.5">
                     <p className="font-medium text-foreground">
@@ -54,7 +67,7 @@ const SelectQuality: React.FC<SelectQualityProps> = ({ control, name }) => {
                       {quality.description}
                     </p>
                   </div>
-                </div>{' '}
+                </div>
               </SelectItem>
             ))}
           </SelectContent>

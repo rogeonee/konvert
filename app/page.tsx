@@ -7,18 +7,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
-import ImageCard from '@/components/image-card';
 import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
+import ImageCard from '@/components/image-card';
 import { filterHeicFiles } from '@/lib/utils';
 import { useHeicConversion } from '@/lib/useHeicConversion';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
+  format: z.string().min(1, 'Format is required'), // Add global format
   images: z.array(
     z.object({
-      file: z.any(), // For server-side rendering
-      format: z.string().min(1, 'Format is required'),
+      file: z.any(), // For SSR
     }),
   ),
 });
@@ -30,6 +30,7 @@ const Home = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       quality: 'high',
+      format: 'jpg', // Default format
       images: [],
     },
   });
@@ -45,7 +46,6 @@ const Home = () => {
 
       const newImages = validFiles.map((file) => ({
         file,
-        format: '',
       }));
 
       append(newImages);
@@ -62,7 +62,36 @@ const Home = () => {
     noClick: true,
   });
 
-  const { convertHeicToFormat, isConverting, progress } = useHeicConversion();
+  const {
+    convertHeicToFormat,
+    isConverting,
+    progressMap,
+    convertedFiles,
+    downloadAll,
+    downloadFile,
+    removeConvertedFile,
+    clearConvertedFiles,
+  } = useHeicConversion();
+
+  const onSubmit = async (data: FormData) => {
+    console.log('onSubmit fired');
+    const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
+
+    try {
+      // Clear any previously converted files
+      clearConvertedFiles();
+
+      for (const image of data.images) {
+        await convertHeicToFormat(
+          image.file,
+          data.format,
+          qualityMap[data.quality],
+        );
+      }
+    } catch (error) {
+      console.error('Error during conversion:', error);
+    }
+  };
 
   const handleAddMore = () => {
     const input = document.getElementById('fileInput') as HTMLInputElement;
@@ -73,10 +102,9 @@ const Home = () => {
 
       const newImages = validFiles.map((file) => ({
         file,
-        format: '',
       }));
 
-      console.log('newImages:', newImages);
+      console.log('handleAddMore | newImages:', newImages);
 
       append(newImages);
 
@@ -87,28 +115,49 @@ const Home = () => {
     input.click();
   };
 
-  const onSubmit = async (data: FormData) => {
-    console.log('onSubmit fired');
-    const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
-
-    try {
-      for (const image of data.images) {
-        await convertHeicToFormat(
-          image.file,
-          image.format,
-          qualityMap[data.quality],
-        );
-      }
-
-      // Reset form after all conversions are complete
-      form.reset({
-        quality: 'high',
-        images: [],
-      });
-    } catch (error) {
-      console.error('Error during conversion:', error);
-    }
+  const handleDownloadAll = () => {
+    downloadAll();
+    // reset form after downloading
+    form.reset({
+      quality: 'high',
+      images: [],
+    });
+    clearConvertedFiles();
   };
+
+  const handleRemoveFile = (index: number, filename: string) => {
+    // remove from fields array (ImageCards rendered)
+    remove(index);
+    // remove from converted files if it exists
+    removeConvertedFile(filename);
+  };
+
+  const handleReset = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    form.reset({
+      quality: 'high',
+      format: 'jpg', // Reset to default
+      images: [],
+    });
+    clearConvertedFiles();
+  };
+
+  const getCurrentState = () => {
+    if (fields.length === 0) {
+      return 'start-emp';
+    } else if (!isConverting && convertedFiles.length === 0) {
+      return 'start-add';
+    } else if (isConverting) {
+      return 'converse';
+    } else if (!isConverting && convertedFiles.length === fields.length) {
+      return 'end';
+    }
+
+    return 'impossible';
+  };
+  const currentState = getCurrentState();
 
   return (
     <Form {...form}>
@@ -118,7 +167,9 @@ const Home = () => {
           <Header
             fields={fields}
             handleAddMore={handleAddMore}
+            handleReset={handleReset}
             control={form.control}
+            currentState={currentState}
           />
 
           {/* Dropzone */}
@@ -130,6 +181,7 @@ const Home = () => {
           >
             <input {...getInputProps()} id="fileInput" accept=".heic" />
             {fields.length === 0 ? (
+              // Empty dropzone
               <div className="flex flex-1 items-center justify-center">
                 <div className="flex flex-col items-center gap-1 text-center">
                   <h3 className="text-2xl font-bold tracking-tight">
@@ -154,35 +206,66 @@ const Home = () => {
                 </div>
               </div>
             ) : (
+              // Added ImageCards
               <div className="flex flex-col gap-2 w-full">
-                {fields.map((field, index) => (
-                  <ImageCard
-                    key={field.id}
-                    filename={field.file.name}
-                    filesize={field.file.size}
-                    onRemove={() => remove(index)}
-                    control={form.control}
-                    name={`images.${index}.format`}
-                    progress={progress}
-                  />
-                ))}
+                {fields.map((field, index) => {
+                  // match converted file by original filename
+                  const convertedFile = convertedFiles.find(
+                    (cf) => cf.originalName === field.file.name,
+                  );
+
+                  return (
+                    <ImageCard
+                      key={field.id}
+                      filename={field.file.name}
+                      filesize={field.file.size}
+                      onRemove={() => handleRemoveFile(index, field.file.name)}
+                      control={form.control}
+                      name={`images.${index}.format`}
+                      progress={progressMap[field.file.name] || 0}
+                      isConverted={!!convertedFile}
+                      currentState={currentState}
+                      onDownload={
+                        convertedFile
+                          ? () => {
+                              downloadFile(convertedFile);
+                            }
+                          : undefined
+                      }
+                    />
+                  );
+                })}
               </div>
             )}
           </div>
 
-          {/* Submit button */}
-          <div className="flex justify-center">
-            <Button
-              type="submit"
-              disabled={fields.length === 0 || isConverting}
-              className="w-60"
-            >
-              {isConverting
-                ? 'Konverting...'
-                : fields.length > 1
-                ? 'Konvert all'
-                : 'Konvert'}
-            </Button>
+          {/* Buttons */}
+          <div className="flex justify-center gap-4">
+            {/* Submit button */}
+            {['start-emp', 'start-add', 'converse'].includes(currentState) && (
+              <Button
+                type="submit"
+                disabled={['start-emp', 'converse'].includes(currentState)}
+                className="w-60"
+              >
+                {isConverting
+                  ? 'Konverting...'
+                  : fields.length > 1
+                  ? 'Konvert all'
+                  : 'Konvert'}
+              </Button>
+            )}
+
+            {/* Download button */}
+            {['end'].includes(currentState) && (
+              <Button
+                type="button"
+                onClick={handleDownloadAll}
+                className="w-60 gap-4"
+              >
+                Download{fields.length > 1 ? ' All' : ''}
+              </Button>
+            )}
           </div>
         </div>
       </form>

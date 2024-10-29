@@ -15,7 +15,7 @@ const navlinks = [
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 md:px-6">
+    <header className="sticky top-0 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 md:px-6 z-20">
       <nav className="flex items-center gap-6 text-md font-medium sm:text-md md:text-lg">
         {/*
           <Sheet>
