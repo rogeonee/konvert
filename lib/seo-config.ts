@@ -52,25 +52,25 @@ export const SEO: Metadata = {
     icon: [
       {
         url: '/favicon.ico',
-        type: 'image/x-icon',
+        type: 'image/x-icon', // Retained for compatibility with older browsers
       },
       {
-        url: '/favicon-32x32.png',
-        sizes: '32x32',
+        url: '/favicon-96x96.png', // New icon for standard usage
+        sizes: '96x96',
         type: 'image/png',
       },
       {
-        url: '/favicon-16x16.png',
-        sizes: '16x16',
-        type: 'image/png',
+        url: '/favicon.svg', // New SVG format icon
+        type: 'image/svg+xml',
       },
     ],
     apple: [
       {
-        url: '/apple-icon.png',
+        url: '/apple-touch-icon.png', // Updated Apple touch icon
         sizes: '180x180',
         type: 'image/png',
       },
     ],
   },
+  manifest: '/site.webmanifest',
 };
