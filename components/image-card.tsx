@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Control } from 'react-hook-form';
-import { Download, X } from 'lucide-react';
+import { Download, X, FileImage } from 'lucide-react';
 import {
   Card,
   CardHeader,
@@ -76,11 +76,12 @@ const ImageCard: React.FC<ImageProps> = ({
     : ''.toUpperCase();
 
   return (
-    <Card className="relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4">
+    <Card className="relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4 sm:hover:bg-[#0C0C0C]">
       {progress > 0 && (
         <Progress value={progress} className="animate-progress-pulse" />
       )}
-      <CardHeader className="flex-1">
+      <CardHeader className="flex-row items-center gap-3 pl-4">
+        <FileImage className="hidden sm:flex w-[30px] h-[30px]" />
         <div>
           <CardTitle className="text-md font-medium sm:text-md md:text-lg">
             {isMobile !== 'not-mobile'
