@@ -12,8 +12,8 @@ import {
 import EnvelopeLogo from './env-logo';
 
 const navlinks = [
-  { href: '#', text: 'HEIC' },
-  { href: '#', text: 'About' },
+  { href: '/', text: 'HEIC' },
+  { href: '/about', text: 'About' },
 ];
 
 export default function Navbar() {
@@ -24,18 +24,20 @@ export default function Navbar() {
         <Separator orientation="vertical" className="hidden sm:flex h-8 ml-4" />
         <NavigationMenu>
           <NavigationMenuList>
-            {navlinks.map((link, index) => (
-              <NavigationMenuItem key={index}>
-                <Link href={link} legacyBehavior passHref>
-                  <NavigationMenuLink
-                    key={index}
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    {link.text}
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            ))}
+            <NavigationMenuItem>
+              <Link href={'/'} legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  HEIC
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href={'/about'} legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  About
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </nav>

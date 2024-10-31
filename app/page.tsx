@@ -13,7 +13,6 @@ import Header from '@/components/header';
 import ImageCard from '@/components/image-card';
 import { filterHeicFiles } from '@/lib/utils';
 import { useHeicConversion } from '@/lib/useHeicConversion';
-import posthog from 'posthog-js';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -78,7 +77,6 @@ const Home = () => {
   const onSubmit = async (data: FormData) => {
     console.log('onSubmit fired');
     const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
-    posthog.capture('onsubmit', { property: 'convert' });
 
     try {
       // Clear any previously converted files
@@ -126,7 +124,6 @@ const Home = () => {
       images: [],
     });
     clearConvertedFiles();
-    posthog.capture('download all', { property: 'aaaa' });
   };
 
   const handleRemoveFile = (index: number, filename: string) => {
