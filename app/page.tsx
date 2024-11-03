@@ -5,13 +5,14 @@ import { useDropzone } from 'react-dropzone';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { Download } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
 import ImageCard from '@/components/image-card';
 import { filterHeicFiles } from '@/lib/utils';
-import { useHeicConversion } from '@/lib/useHeicConversion';
+import { useHeicConversion } from '@/hooks/useHeicConversion';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -162,7 +163,7 @@ const Home = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-6rem)] flex-col gap-4 lg:gap-6 lg:p-6">
+        <div className="flex min-h-[calc(100vh-8rem)] sm:min-h-[calc(100vh-6rem)] flex-col gap-4 lg:gap-6 lg:p-6">
           {/* Header */}
           <Header
             fields={fields}
@@ -175,7 +176,7 @@ const Home = () => {
           {/* Dropzone */}
           <div
             {...getRootProps()}
-            className={`flex flex-1 bg-muted/50 rounded-lg border-2 border-dashed shadow-sm p-2 md:p-4 ${
+            className={`flex flex-1 bg-muted/50 rounded-lg border-2 border-dashed shadow-sm p-2 sm:p-4 ${
               isDragActive ? 'border-primary' : 'border-muted'
             }`}
           >
@@ -184,11 +185,11 @@ const Home = () => {
               // Empty dropzone
               <div className="flex flex-1 items-center justify-center">
                 <div className="flex flex-col items-center gap-1 text-center">
-                  <h3 className="text-2xl font-bold tracking-tight">
+                  <h2 className="text-2xl font-bold tracking-tight">
                     {isDragActive
                       ? 'Drop the files here'
-                      : 'Drop files or pick manually'}
-                  </h3>
+                      : 'Drop HEIC files or pick manually'}
+                  </h2>
                   <p className="text-sm text-muted-foreground">
                     Max size 100MB
                   </p>
@@ -240,8 +241,8 @@ const Home = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-center gap-4">
-            {/* Submit button */}
+          <div className="flex justify-center">
+            {/* Konvert button */}
             {['start-emp', 'start-add', 'converse'].includes(currentState) && (
               <Button
                 type="submit"
@@ -261,9 +262,10 @@ const Home = () => {
               <Button
                 type="button"
                 onClick={handleDownloadAll}
-                className="w-60 gap-4"
+                className="w-60 gap-2"
               >
-                Download{fields.length > 1 ? ' All' : ''}
+                Save{fields.length > 1 ? ' All' : ''}
+                <Download className="w-4 h-4" />
               </Button>
             )}
           </div>

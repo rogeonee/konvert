@@ -7,8 +7,6 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
-import { DiscAlbum } from 'lucide-react';
 
 const formats = [
   { value: 'jpg', label: 'JPG' },
