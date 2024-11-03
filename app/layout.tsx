@@ -6,6 +6,7 @@ import { CSPostHogProvider } from '@/components/posthog-provider';
 import Navbar from '@/components/navbar';
 import { cn } from '@/lib/utils';
 import { SEO } from '@/lib/seo-config';
+import Footer from '@/components/footer';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -40,6 +41,7 @@ export default function RootLayout({
                 {children}
                 <SpeedInsights />
               </main>
+              <Footer />
             </div>
           </ThemeProvider>
         </body>

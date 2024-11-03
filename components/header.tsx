@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({
       {/* Selects */}
       <div className="flex flex-col md:flex-row items-center gap-4 w-full">
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
-          <h1 className="text-lg font-semibold md:text-2xl whitespace-nowrap">
+          <h1 className="text-xl font-semibold md:text-2xl whitespace-nowrap">
             Konvert to
           </h1>
           <SelectFormat
@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
-          <h1 className="text-lg font-semibold md:text-2xl whitespace-nowrap">
+          <h1 className="text-xl font-semibold md:text-2xl whitespace-nowrap">
             in
           </h1>
           <SelectQuality

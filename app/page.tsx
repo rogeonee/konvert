@@ -163,7 +163,7 @@ const Home = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-6rem)] flex-col gap-4 lg:gap-6 lg:p-6">
+        <div className="flex min-h-[calc(100vh-8rem)] sm:min-h-[calc(100vh-6rem)] flex-col gap-4 lg:gap-6 lg:p-6">
           {/* Header */}
           <Header
             fields={fields}
@@ -176,7 +176,7 @@ const Home = () => {
           {/* Dropzone */}
           <div
             {...getRootProps()}
-            className={`flex flex-1 bg-muted/50 rounded-lg border-2 border-dashed shadow-sm p-2 md:p-4 ${
+            className={`flex flex-1 bg-muted/50 rounded-lg border-2 border-dashed shadow-sm p-2 sm:p-4 ${
               isDragActive ? 'border-primary' : 'border-muted'
             }`}
           >
@@ -241,7 +241,7 @@ const Home = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center">
             {/* Konvert button */}
             {['start-emp', 'start-add', 'converse'].includes(currentState) && (
               <Button
