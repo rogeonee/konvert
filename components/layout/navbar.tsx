@@ -9,12 +9,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import EnvelopeLogo from './env-logo';
-
-const navlinks = [
-  { href: '/', text: 'HEIC' },
-  { href: '/about', text: 'About' },
-];
+import EnvelopeLogo from '../../lib/env-logo';
 
 export default function Navbar() {
   return (

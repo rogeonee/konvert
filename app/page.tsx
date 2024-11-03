@@ -12,7 +12,7 @@ import { Form } from '@/components/ui/form';
 import Header from '@/components/header';
 import ImageCard from '@/components/image-card';
 import { filterHeicFiles } from '@/lib/utils';
-import { useHeicConversion } from '@/lib/useHeicConversion';
+import { useHeicConversion } from '@/hooks/useHeicConversion';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),

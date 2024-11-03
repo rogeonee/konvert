@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from './ui/progress';
-import useMobile from '@/lib/useMobile';
+import useMobile from '@/hooks/useMobile';
 
 type ImageProps = {
   filename: string;

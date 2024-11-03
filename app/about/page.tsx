@@ -5,7 +5,9 @@ export default function About() {
   return (
     <div className="mx-auto max-w-prose pt-11 sm:py-3">
       <article className="prose dark:prose-invert">
-        <h1 className="text-4xl font-semibold mb-8">Why Konvert Exists</h1>
+        <h1 className="text-3xl sm:text-4xl font-semibold mb-8">
+          Why Konvert Exists
+        </h1>
         <div className="dark:text-[var(--custom-dark-font-color)]">
           <p className="my-5">
             Konvert started back in August 2024, when I needed to convert an

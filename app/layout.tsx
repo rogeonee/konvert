@@ -1,12 +1,12 @@
+import './globals.css';
 import { Inter as FontSans } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
-import { CSPostHogProvider } from '@/components/posthog-provider';
-import Navbar from '@/components/navbar';
+import { ThemeProvider } from '@/components/providers/theme-provider';
+import { CSPostHogProvider } from '@/components/providers/posthog-provider';
+import Navbar from '@/components/layout/navbar';
+import Footer from '@/components/layout/footer';
 import { cn } from '@/lib/utils';
 import { SEO } from '@/lib/seo-config';
-import Footer from '@/components/footer';
 
 const fontSans = FontSans({
   subsets: ['latin'],
