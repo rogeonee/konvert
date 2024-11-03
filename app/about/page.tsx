@@ -13,9 +13,10 @@ export default function About() {
             accepted. Sure, there were plenty of format converters out there —
             but most were overloaded with options, designed like something
             straight from the early 2010s, and often lacked focus. Being a fan
-            of clean, black-and-white, functional design (thanks,
+            of clean, black-and-white, functional design (thanks,{' '}
             <Link
               href={'https://vercel.com/about'}
+              target="_blank"
               className="text-primary underline"
             >
               Vercel
@@ -23,6 +24,7 @@ export default function About() {
             and{' '}
             <Link
               href={'https://ui.shadcn.com/docs'}
+              target="_blank"
               className="text-primary underline"
             >
               shadcn
