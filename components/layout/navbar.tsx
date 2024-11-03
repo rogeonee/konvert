@@ -9,7 +9,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import EnvelopeLogo from '../../lib/env-logo';
+import EnvelopeLogo from '../env-logo';
 
 export default function Navbar() {
   return (
