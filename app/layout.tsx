@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { CSPostHogProvider } from '@/components/providers/posthog-provider';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
+import SnowfallComponent from '@/components/snowfall';
 import { cn } from '@/lib/utils';
 import { SEO } from '@/lib/seo-config';
 
@@ -25,7 +26,7 @@ export default function RootLayout({
       <CSPostHogProvider>
         <body
           className={cn(
-            'min-h-screen bg-background font-sans antialiased',
+            'min-h-screen bg-background font-sans antialiased relative',
             fontSans.variable,
           )}
         >
@@ -39,6 +40,7 @@ export default function RootLayout({
               <Navbar />
               <main className="flex-1 p-4">
                 {children}
+                <SnowfallComponent />
                 <SpeedInsights />
               </main>
               <Footer />
