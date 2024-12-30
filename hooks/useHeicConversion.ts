@@ -49,7 +49,6 @@ export const useHeicConversion = () => {
       const zipWriter = new zip.ZipWriter(
         new zip.BlobWriter('application/zip'),
       );
-
       try {
         await Promise.all(
           files.map(async (file) => {
@@ -59,11 +58,7 @@ export const useHeicConversion = () => {
             await zipWriter.add(filename, new zip.BlobReader(file.blob));
           }),
         );
-
-        const blob = await zipWriter.close();
-        setZipBlob(blob);
-
-        return blob;
+        return await zipWriter.close();
       } catch (error) {
         console.error('Error creating zip file:', error);
         throw error;
@@ -91,39 +86,21 @@ export const useHeicConversion = () => {
 
       if (data.type === 'progress') {
         const { id, progress } = data;
-
-        // Update the ref
-        progressRef.current[id] = progress;
-
-        // If there's no timer, schedule a state update in 200ms
-        if (!progressUpdateTimer.current) {
-          progressUpdateTimer.current = setTimeout(() => {
-            setProgressMap({ ...progressRef.current });
-            progressUpdateTimer.current = null;
-          }, 300);
-        }
+        updateProgress(id, progress);
       } else if (data.type === 'result') {
-        const { id, blob, format, filename } = data;
-
+        // Decrement active conversions
         setActiveConversions((count) => Math.max(0, count - 1));
 
-        // Add newly converted file
-        setConvertedFiles((prev) => {
-          const newFiles = [
-            ...prev,
-            {
-              blob,
-              originalName: filename,
-              format,
-            },
-          ];
-
-          // optionally create a ZIP if more than 3
-          if (newFiles.length > 3) {
-            void createZipFile(newFiles);
-          }
-          return newFiles;
-        });
+        // Store this newly converted file
+        const { id, blob, format, filename } = data;
+        setConvertedFiles((prev) => [
+          ...prev,
+          {
+            blob,
+            originalName: filename,
+            format,
+          },
+        ]);
       }
     };
 
@@ -134,7 +111,7 @@ export const useHeicConversion = () => {
         workerRef.current.removeEventListener('message', handleWorkerMessage);
       }
     };
-  }, [updateProgress, createZipFile]);
+  }, [updateProgress]);
 
   // Main conversion function
   const convertHeicToFormat = useCallback(
@@ -196,48 +173,43 @@ export const useHeicConversion = () => {
   // Download all converted files, or zip them
   const downloadAll = useCallback(async () => {
     if (convertedFiles.length > 3) {
-      const blob = zipBlob || (await createZipFile(convertedFiles));
+      // Always re-create the zip from the current final list
+      const blob = await createZipFile(convertedFiles);
+      setZipBlob(blob);
+
+      // Download the zip
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-
       a.href = url;
       a.download = 'converted_images.zip';
       document.body.appendChild(a);
       a.click();
-
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } else {
-      // For <= 3 files, just download individually
+      // For 3 or fewer, just download individually
       convertedFiles.forEach(downloadFile);
     }
-  }, [convertedFiles, zipBlob, createZipFile, downloadFile]);
+  }, [convertedFiles, createZipFile, downloadFile]);
 
   // Remove one file from the list
-  const removeConvertedFile = useCallback(
-    (filename: string) => {
-      setConvertedFiles((prev) => {
-        const newFiles = prev.filter((file) => file.originalName !== filename);
+  const removeConvertedFile = useCallback((filename: string) => {
+    setConvertedFiles((prev) => {
+      const newFiles = prev.filter((file) => file.originalName !== filename);
+      // If we drop below 4 files, we no longer have a valid zip
+      if (newFiles.length <= 3) {
+        setZipBlob(null);
+      }
+      return newFiles;
+    });
 
-        // If we drop below 4, remove or recreate the zip
-        if (newFiles.length <= 3) {
-          setZipBlob(null);
-        } else {
-          void createZipFile(newFiles);
-        }
-
-        return newFiles;
-      });
-
-      // Clean up progress for removed file
-      setProgressMap((prev) => {
-        const newMap = { ...prev };
-        delete newMap[filename];
-        return newMap;
-      });
-    },
-    [createZipFile],
-  );
+    // Clean up progress
+    setProgressMap((prev) => {
+      const newMap = { ...prev };
+      delete newMap[filename];
+      return newMap;
+    });
+  }, []);
 
   // Clear all
   const clearConvertedFiles = useCallback(() => {
