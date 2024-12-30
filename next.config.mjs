@@ -8,7 +8,10 @@ const nextConfig = {
           /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
       },
     ];
-
+    // Fix for WebWorker window reference
+    if (!isServer) {
+      config.output.globalObject = 'self';
+    }
     return config;
   },
 };
