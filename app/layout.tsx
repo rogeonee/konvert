@@ -6,15 +6,15 @@ import { CSPostHogProvider } from '@/components/providers/posthog-provider';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import SnowfallComponent from '@/components/snowfall';
+import { GlobalMeta } from '@/lib/seo-config';
 import { cn } from '@/lib/utils';
-import { SEO } from '@/lib/seo-config';
 
 const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans',
 });
 
-export const metadata = SEO;
+export const metadata = GlobalMeta;
 
 export default function RootLayout({
   children,

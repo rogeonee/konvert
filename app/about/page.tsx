@@ -1,5 +1,8 @@
 import Link from 'next/link';
+import { AboutMeta } from '@/lib/seo-config';
 import { Separator } from '@/components/ui/separator';
+
+export const metadata = AboutMeta;
 
 export default function About() {
   return (
