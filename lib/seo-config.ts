@@ -44,9 +44,12 @@ export const HomeMeta: Metadata = {
     'free HEIC converter',
   ],
   openGraph: {
-    title: title,
-    description: description,
+    title,
+    description,
+    type: 'website',
+    locale: 'en_US',
     url: 'https://konvert-sigma.vercel.app/',
+    siteName: 'Konvert',
     images: [
       {
         url: '/og-image.png',
@@ -58,8 +61,9 @@ export const HomeMeta: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: title,
-    description: description,
+    creator: '@roge_one_',
+    title,
+    description,
     images: [{ url: '/og-image.png', alt: 'Konvert Screenshot' }],
   },
 };
@@ -84,6 +88,7 @@ export const AboutMeta: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    creator: '@roge_one_',
     title: 'About Konvert',
     description:
       'Learn more about Konvert, the free, secure tool for converting HEIC files to JPG or PNG.',
