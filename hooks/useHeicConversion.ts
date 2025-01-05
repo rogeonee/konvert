@@ -23,7 +23,6 @@ export const useHeicConversion = () => {
   const workerRef = useRef<Worker | null>(null);
 
   const progressRef = useRef<FileProgress>({});
-  const progressUpdateTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Update progress for a single file
   const updateProgress = useCallback((filename: string, progress: number) => {
@@ -117,7 +116,6 @@ export const useHeicConversion = () => {
   const convertHeicToFormat = useCallback(
     async (file: File, format: string, quality: number): Promise<void> => {
       setActiveConversions((count) => count + 1);
-      // setIsConverting(true);
       try {
         // Make sure worker is initialized
         initWorker();
@@ -129,9 +127,9 @@ export const useHeicConversion = () => {
         // Reset progress to 0 for this file
         updateProgress(file.name, 0);
 
-        // 1) Read file as ArrayBuffer
+        // Read file as ArrayBuffer
         const fileBuffer = await file.arrayBuffer();
-        // 2) Wrap in a Uint8Array so that decode sees typed data
+        // Wrap in a Uint8Array so that decode sees typed data
         const typedArray = new Uint8Array(fileBuffer);
 
         // Post to worker (transfer typedArray.buffer)
@@ -148,10 +146,7 @@ export const useHeicConversion = () => {
       } catch (error) {
         console.error('Error during conversion:', error);
         setActiveConversions((count) => Math.max(0, count - 1));
-        // setIsConverting(false);
       }
-
-      // setIsConverting(false);
     },
     [initWorker, updateProgress],
   );

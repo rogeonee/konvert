@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
@@ -73,6 +73,20 @@ const Home = () => {
     removeConvertedFile,
     clearConvertedFiles,
   } = useHeicConversion();
+
+  const emptyDropzoneRef = useRef<HTMLDivElement>(null);
+  const [dropzoneHeight, setDropzoneHeight] = useState<string | undefined>(); // undefined initially
+
+  useEffect(() => {
+    if (emptyDropzoneRef.current) {
+      const height = emptyDropzoneRef.current.offsetHeight;
+      setDropzoneHeight(`${height - 32}px`);
+      console.log(
+        'empty dropzone height:',
+        emptyDropzoneRef.current.offsetHeight,
+      );
+    }
+  }, []);
 
   const onSubmit = async (data: FormData) => {
     console.log('onSubmit fired');
@@ -176,14 +190,17 @@ const Home = () => {
           {/* Dropzone */}
           <div
             {...getRootProps()}
-            className={`flex flex-1 bg-muted/50 rounded-lg border-2 border-dashed shadow-sm p-2 sm:p-4 ${
+            className={`flex flex-1 bg-muted/50 rounded-lg border-2 border-dashed shadow-sm ${
               isDragActive ? 'border-primary' : 'border-muted'
             }`}
           >
             <input {...getInputProps()} id="fileInput" accept=".heic" />
             {fields.length === 0 ? (
               // Empty dropzone
-              <div className="flex flex-1 items-center justify-center">
+              <div
+                className="flex flex-1 items-center justify-center p-2 sm:p-4"
+                ref={emptyDropzoneRef}
+              >
                 <div className="flex flex-col items-center gap-1 text-center">
                   <h2 className="text-2xl font-bold tracking-tight">
                     {isDragActive
@@ -208,7 +225,10 @@ const Home = () => {
               </div>
             ) : (
               // Added ImageCards
-              <div className="flex flex-col gap-2 w-full">
+              <div
+                className="dropzone flex flex-col gap-2 w-full overflow-y-auto p-2 sm:p-4"
+                style={{ height: dropzoneHeight, boxSizing: 'content-box' }}
+              >
                 {fields.map((field, index) => {
                   // match converted file by original filename
                   const convertedFile = convertedFiles.find(
@@ -247,13 +267,18 @@ const Home = () => {
               <Button
                 type="submit"
                 disabled={['start-emp', 'converse'].includes(currentState)}
-                className="w-60"
+                className="w-60 gap-2"
               >
-                {isConverting
-                  ? 'Konverting...'
-                  : fields.length > 1
-                  ? 'Konvert all'
-                  : 'Konvert'}
+                {isConverting ? (
+                  <>
+                    Konverting...
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  </>
+                ) : fields.length > 1 ? (
+                  'Konvert all'
+                ) : (
+                  'Konvert'
+                )}
               </Button>
             )}
 
