@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,6 +37,14 @@ const Home = () => {
       images: [],
     },
   });
+
+  const watchFormat = form.watch('format');
+
+  useEffect(() => {
+    if (watchFormat === 'png') {
+      form.setValue('quality', 'high');
+    }
+  }, [watchFormat, form]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -222,6 +230,7 @@ const Home = () => {
             handleReset={handleReset}
             control={form.control}
             currentState={currentState}
+            isPng={watchFormat === 'png'}
           />
 
           {/* Dropzone */}

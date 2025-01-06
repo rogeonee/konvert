@@ -1,4 +1,3 @@
-import React from 'react';
 import { Control, Controller } from 'react-hook-form';
 import {
   Select,
@@ -43,11 +42,11 @@ const SelectQuality: React.FC<SelectQualityProps> = ({
       control={control}
       render={({ field }) => (
         <Select
+          value={field.value}
           onValueChange={field.onChange}
-          defaultValue={field.value}
           disabled={disabled}
         >
-          <SelectTrigger className="w-[140px] [&_[data-description]]:hidden">
+          <SelectTrigger className="w-[140px] [&_[data-description]]:hidden disabled:pointer-events-none">
             <SelectValue placeholder="Select quality" />
           </SelectTrigger>
           <SelectContent

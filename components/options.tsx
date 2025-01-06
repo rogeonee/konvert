@@ -11,6 +11,7 @@ type OptionsProps = {
   handleAddMore: () => void;
   handleReset: (e: React.MouseEvent) => void;
   currentState: 'start-emp' | 'start-add' | 'converse' | 'end' | 'impossible';
+  isPng?: boolean;
 };
 
 const Options: React.FC<OptionsProps> = ({
@@ -19,6 +20,7 @@ const Options: React.FC<OptionsProps> = ({
   handleAddMore,
   handleReset,
   currentState = 'start-emp',
+  isPng,
 }) => {
   return (
     <div className="flex flex-row justify-between sm:items-center sm:gap-8">
@@ -41,7 +43,7 @@ const Options: React.FC<OptionsProps> = ({
           <SelectQuality
             control={control}
             name="quality"
-            disabled={currentState === 'converse'}
+            disabled={currentState === 'converse' || isPng}
           />
         </div>
       </div>
