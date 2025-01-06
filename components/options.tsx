@@ -5,20 +5,22 @@ import SelectQuality from '@/components/select-quality';
 import SelectFormat from '@/components/select-format';
 import type { FormData } from './home';
 
-type HeaderProps = {
+type OptionsProps = {
   fields: FieldArrayWithId<FormData, 'images'>[];
   control: Control<FormData>;
   handleAddMore: () => void;
   handleReset: (e: React.MouseEvent) => void;
   currentState: 'start-emp' | 'start-add' | 'converse' | 'end' | 'impossible';
+  isPng?: boolean;
 };
 
-const Header: React.FC<HeaderProps> = ({
+const Options: React.FC<OptionsProps> = ({
   fields,
   control,
   handleAddMore,
   handleReset,
   currentState = 'start-emp',
+  isPng,
 }) => {
   return (
     <div className="flex flex-row justify-between sm:items-center sm:gap-8">
@@ -41,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({
           <SelectQuality
             control={control}
             name="quality"
-            disabled={currentState === 'converse'}
+            disabled={currentState === 'converse' || isPng}
           />
         </div>
       </div>
@@ -77,4 +79,4 @@ const Header: React.FC<HeaderProps> = ({
   );
 };
 
-export default Header;
+export default Options;

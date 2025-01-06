@@ -85,7 +85,7 @@ const ImageCard: React.FC<ImageProps> = ({
         'relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4',
         isConverting
           ? ''
-          : ' transition-transform transform md:hover:scale-[1.005] md:hover:bg-accent/50 md:hover:border-accent-foreground',
+          : ' transition-transform transform md:hover:scale-[1.005] md:hover:border-accent-foreground/70',
         className,
       )}
     >

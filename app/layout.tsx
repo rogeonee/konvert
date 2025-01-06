@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { CSPostHogProvider } from '@/components/providers/posthog-provider';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
+import { Toaster } from '@/components/ui/toaster';
 import SnowfallComponent from '@/components/snowfall';
 import { GlobalMeta } from '@/lib/seo-config';
 import { cn } from '@/lib/utils';
@@ -43,6 +44,7 @@ export default function RootLayout({
                 <SnowfallComponent />
                 <SpeedInsights />
               </main>
+              <Toaster />
               <Footer />
             </div>
           </ThemeProvider>

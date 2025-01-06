@@ -1,4 +1,3 @@
-import React from 'react';
 import { Control, Controller } from 'react-hook-form';
 import {
   Select,
@@ -38,7 +37,7 @@ const SelectFormat: React.FC<SelectFormatProps> = ({
           defaultValue={field.value}
           disabled={disabled}
         >
-          <SelectTrigger className="w-[100px]">
+          <SelectTrigger className="w-[100px] disabled:pointer-events-none">
             <SelectValue defaultValue="jpg" />
           </SelectTrigger>
           <SelectContent
