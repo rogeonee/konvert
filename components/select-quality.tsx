@@ -60,7 +60,7 @@ const SelectQuality: React.FC<SelectQualityProps> = ({
               <SelectItem key={quality.value} value={quality.value}>
                 <div className="flex items-start gap-3 text-muted-foreground">
                   <div className="grid gap-0.5">
-                    <p className="font-medium text-foreground">
+                    <p className="font-semibold text-foreground">
                       {quality.label}
                     </p>
                     <p className="text-xs" data-description>

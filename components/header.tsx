@@ -3,7 +3,7 @@ import { Control, FieldArrayWithId } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import SelectQuality from '@/components/select-quality';
 import SelectFormat from '@/components/select-format';
-import type { FormData } from '@/app/page';
+import type { FormData } from './home';
 
 type HeaderProps = {
   fields: FieldArrayWithId<FormData, 'images'>[];
@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({
       {/* Selects */}
       <div className="flex flex-col md:flex-row items-center gap-4 w-full">
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
-          <h1 className="text-xl font-semibold md:text-2xl whitespace-nowrap">
+          <h1 className="text-2xl font-semibold md:text-3xl whitespace-nowrap">
             Konvert to
           </h1>
           <SelectFormat
@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
-          <h1 className="text-xl font-semibold md:text-2xl whitespace-nowrap">
+          <h1 className="text-2xl font-semibold md:text-3xl whitespace-nowrap">
             in
           </h1>
           <SelectQuality

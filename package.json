@@ -32,9 +32,11 @@
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.52.2",
+    "react-snowfall": "^2.2.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.1",
+    "worker-loader": "^3.0.8",
     "zod": "^3.23.8"
   },
   "devDependencies": {

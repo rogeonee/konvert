@@ -35,7 +35,6 @@ const ImageCard: React.FC<ImageProps> = ({
   currentState = 'start-add',
 }) => {
   const isMobile = useMobile();
-  // const progress = 80;
 
   // Format the file size
   const formatFileSize = (size: number) => {
@@ -76,7 +75,7 @@ const ImageCard: React.FC<ImageProps> = ({
     : ''.toUpperCase();
 
   return (
-    <Card className="relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4 sm:hover:bg-[#0C0C0C]">
+    <Card className="relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4">
       {progress > 0 && (
         <Progress value={progress} className="animate-progress-pulse" />
       )}
