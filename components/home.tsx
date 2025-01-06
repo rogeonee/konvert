@@ -250,9 +250,7 @@ const Home = () => {
                       ? 'Drop the files here'
                       : 'Drop HEIC files or pick manually'}
                   </h2>
-                  <p className="text-sm text-muted-foreground">
-                    Max size 100MB
-                  </p>
+                  <p className="text-sm text-muted-foreground">Max size 50MB</p>
                   <Button
                     variant="default"
                     className="mt-4"
