@@ -11,9 +11,5 @@ export const filterHeicFiles = (files: File[]) => {
     return extension === 'heic';
   });
 
-  if (validFiles.length !== files.length) {
-    alert('Non-HEIC files were skipped.');
-  }
-
   return validFiles;
 };

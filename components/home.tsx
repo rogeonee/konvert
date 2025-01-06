@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { FileRejection, useDropzone } from 'react-dropzone';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -13,6 +13,8 @@ import Header from '@/components/header';
 import ImageCard from '@/components/image-card';
 import { filterHeicFiles } from '@/lib/utils';
 import { useHeicConversion } from '@/hooks/useHeicConversion';
+import { useToast } from '@/hooks/use-toast';
+import { ToastAction } from './ui/toast';
 
 const formSchema = z.object({
   quality: z.enum(['low', 'medium', 'high']),
@@ -41,9 +43,19 @@ const Home = () => {
     name: 'images',
   });
 
+  const { toast } = useToast();
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const validFiles = filterHeicFiles(acceptedFiles);
+
+      if (acceptedFiles.length !== validFiles.length) {
+        toast({
+          title: 'Non-HEIC files were skipped.',
+          description: 'It is a HEIC converter after all.',
+          className: 'border-[#A80115]',
+        });
+      }
 
       const newImages = validFiles.map((file) => ({
         file,
@@ -51,15 +63,34 @@ const Home = () => {
 
       append(newImages);
     },
-    [append],
+    [append, toast],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    onDropRejected: (rejectedFiles) => {
+      if (rejectedFiles.length > 0) {
+        const largeFiles = rejectedFiles.filter((file) =>
+          file.errors.some((err) => err.code === 'file-too-large'),
+        );
+
+        const length = largeFiles.length;
+        console.log('largeFiles length', length);
+        if (length > 0) {
+          toast({
+            title: 'Some files are too large.',
+            description: `Files must be smaller than 50MB. ${length} file${
+              length >= 2 ? 's' : ''
+            } skipped.`,
+            className: 'border-[#A80115]',
+          });
+        }
+      }
+    },
     accept: {
       'image/*': ['.heic'],
     },
-    maxSize: 100 * 1024 * 1024, // 100MB
+    maxSize: 50 * 1024 * 1024, // 100MB
     noClick: true,
   });
 
@@ -90,6 +121,22 @@ const Home = () => {
       }
     } catch (error) {
       console.error('Error during conversion:', error);
+      toast({
+        title: 'Uh oh! Something went wrong.',
+        description:
+          'There was a problem during conversion, refresh the page and try again.',
+        action: (
+          <ToastAction
+            altText="Refresh"
+            onClick={() => window.location.reload()}
+            className="bg-destructive text-destructive-foreground"
+          >
+            Refresh
+          </ToastAction>
+        ),
+        duration: Infinity,
+        className: 'border-[#A80115]',
+      });
     }
   };
 
@@ -99,6 +146,13 @@ const Home = () => {
     input.onchange = (event: Event) => {
       const files = Array.from(input.files || []);
       const validFiles = filterHeicFiles(files);
+      if (files.length !== validFiles.length) {
+        toast({
+          title: 'Non-HEIC files were skipped.',
+          description: 'Only HEIC files are supported.',
+          className: 'bg-white',
+        });
+      }
 
       const newImages = validFiles.map((file) => ({
         file,
