@@ -86,6 +86,16 @@ const config = {
         'progress-pulse':
           'progress-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
+      height: {
+        'empty-base': 'calc(100vh - 300px)',
+        'empty-base-sm': 'calc(100vh - 268px)',
+        'empty-base-md': 'calc(100vh - 212px)',
+        'empty-base-lg': 'calc(100vh - 278px)',
+        'filled-base': 'calc(100vh - 316px)',
+        'filled-base-sm': 'calc(100vh - 300px)',
+        'filled-base-md': 'calc(100vh - 244px)',
+        'filled-base-lg': 'calc(100vh - 310px)',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

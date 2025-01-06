@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Progress } from './ui/progress';
 import useMobile from '@/hooks/useMobile';
+import { cn } from '@/lib/utils';
 
 type ImageProps = {
   filename: string;
@@ -21,8 +22,10 @@ type ImageProps = {
   progress?: number;
   onRemove: () => void;
   onDownload?: () => void;
+  isConverting?: boolean;
   isConverted?: boolean;
   currentState: 'start-emp' | 'start-add' | 'converse' | 'end' | 'impossible';
+  className?: string;
 };
 
 const ImageCard: React.FC<ImageProps> = ({
@@ -31,8 +34,10 @@ const ImageCard: React.FC<ImageProps> = ({
   progress = 0,
   onRemove,
   onDownload,
+  isConverting,
   isConverted,
   currentState = 'start-add',
+  className,
 }) => {
   const isMobile = useMobile();
 
@@ -75,7 +80,15 @@ const ImageCard: React.FC<ImageProps> = ({
     : ''.toUpperCase();
 
   return (
-    <Card className="relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4">
+    <Card
+      className={cn(
+        'relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4',
+        isConverting
+          ? ''
+          : ' transition-transform transform md:hover:scale-[1.005] md:hover:bg-accent/50 md:hover:border-accent-foreground',
+        className,
+      )}
+    >
       {progress > 0 && (
         <Progress value={progress} className="animate-progress-pulse" />
       )}

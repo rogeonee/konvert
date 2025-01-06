@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -74,22 +74,7 @@ const Home = () => {
     clearConvertedFiles,
   } = useHeicConversion();
 
-  const emptyDropzoneRef = useRef<HTMLDivElement>(null);
-  const [dropzoneHeight, setDropzoneHeight] = useState<string | undefined>(); // undefined initially
-
-  useEffect(() => {
-    if (emptyDropzoneRef.current) {
-      const height = emptyDropzoneRef.current.offsetHeight;
-      setDropzoneHeight(`${height - 32}px`);
-      console.log(
-        'empty dropzone height:',
-        emptyDropzoneRef.current.offsetHeight,
-      );
-    }
-  }, []);
-
   const onSubmit = async (data: FormData) => {
-    console.log('onSubmit fired');
     const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
 
     try {
@@ -118,8 +103,6 @@ const Home = () => {
       const newImages = validFiles.map((file) => ({
         file,
       }));
-
-      console.log('handleAddMore | newImages:', newImages);
 
       append(newImages);
 
@@ -197,10 +180,7 @@ const Home = () => {
             <input {...getInputProps()} id="fileInput" accept=".heic" />
             {fields.length === 0 ? (
               // Empty dropzone
-              <div
-                className="flex flex-1 items-center justify-center p-2 sm:p-4"
-                ref={emptyDropzoneRef}
-              >
+              <div className="flex flex-1 items-center justify-center p-2 sm:p-4 h-empty-base sm:h-empty-base-sm md:h-empty-base-md lg:h-empty-base-lg">
                 <div className="flex flex-col items-center gap-1 text-center">
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
                     {isDragActive
@@ -226,8 +206,11 @@ const Home = () => {
             ) : (
               // Added ImageCards
               <div
-                className="dropzone flex flex-col gap-2 w-full overflow-y-auto p-2 sm:p-4"
-                style={{ height: dropzoneHeight, boxSizing: 'content-box' }}
+                className="dropzone flex flex-col gap-2 w-full overflow-y-auto p-2 
+                  sm:p-4 h-filled-base sm:h-filled-base-sm md:h-filled-base-md lg:h-filled-base-lg"
+                style={{
+                  boxSizing: 'content-box',
+                }}
               >
                 {fields.map((field, index) => {
                   // match converted file by original filename
@@ -244,6 +227,7 @@ const Home = () => {
                       control={form.control}
                       name={`images.${index}.format`}
                       progress={progressMap[field.file.name] || 0}
+                      isConverting={isConverting}
                       isConverted={!!convertedFile}
                       currentState={currentState}
                       onDownload={
