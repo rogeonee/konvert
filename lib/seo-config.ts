@@ -19,7 +19,7 @@ const keywords = [
 ];
 
 export const GlobalMeta: Metadata = {
-  metadataBase: new URL('https://konvert-sigma.vercel.app/'),
+  metadataBase: new URL('https://www.knvrt.one/'),
   icons: {
     icon: [
       { url: '/favicon.ico', type: 'image/x-icon' },
@@ -48,7 +48,7 @@ export const HomeMeta: Metadata = {
     description,
     type: 'website',
     locale: 'en_US',
-    url: 'https://konvert-sigma.vercel.app/',
+    url: 'https://www.knvrt.one/',
     siteName: 'Konvert',
     images: [
       {
@@ -76,7 +76,7 @@ export const AboutMeta: Metadata = {
     title: 'About Konvert',
     description:
       'Learn more about Konvert, the free, secure tool for converting HEIC files to JPG or PNG.',
-    url: 'https://konvert-sigma.vercel.app/about',
+    url: 'https://www.knvrt.one/about',
     images: [
       {
         url: '/og-image.png',
