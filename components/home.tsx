@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { FileRejection, useDropzone } from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -9,7 +9,7 @@ import { Download, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import Header from '@/components/header';
+import Options from '@/components/options';
 import ImageCard from '@/components/image-card';
 import { filterHeicFiles } from '@/lib/utils';
 import { useHeicConversion } from '@/hooks/useHeicConversion';
@@ -90,7 +90,7 @@ const Home = () => {
     accept: {
       'image/*': ['.heic'],
     },
-    maxSize: 50 * 1024 * 1024, // 100MB
+    maxSize: 50 * 1024 * 1024, // 50MB
     noClick: true,
   });
 
@@ -215,8 +215,8 @@ const Home = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="flex min-h-[calc(100vh-8rem)] sm:min-h-[calc(100vh-6rem)] flex-col gap-4 lg:gap-6 lg:p-6">
-          {/* Header */}
-          <Header
+          {/* Options */}
+          <Options
             fields={fields}
             handleAddMore={handleAddMore}
             handleReset={handleReset}

@@ -5,7 +5,7 @@ import SelectQuality from '@/components/select-quality';
 import SelectFormat from '@/components/select-format';
 import type { FormData } from './home';
 
-type HeaderProps = {
+type OptionsProps = {
   fields: FieldArrayWithId<FormData, 'images'>[];
   control: Control<FormData>;
   handleAddMore: () => void;
@@ -13,7 +13,7 @@ type HeaderProps = {
   currentState: 'start-emp' | 'start-add' | 'converse' | 'end' | 'impossible';
 };
 
-const Header: React.FC<HeaderProps> = ({
+const Options: React.FC<OptionsProps> = ({
   fields,
   control,
   handleAddMore,
@@ -77,4 +77,4 @@ const Header: React.FC<HeaderProps> = ({
   );
 };
 
-export default Header;
+export default Options;
