@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 
 export const metadata = AboutMeta;
 
-export default function About() {
+const About = () => {
   return (
     <div className="mx-auto max-w-prose pt-11 sm:py-3">
       <article className="prose dark:prose-invert">
@@ -88,4 +88,6 @@ export default function About() {
       </article>
     </div>
   );
-}
+};
+
+export default About;
