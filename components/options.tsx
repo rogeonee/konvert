@@ -3,7 +3,7 @@ import { Control, FieldArrayWithId } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import SelectQuality from '@/components/select-quality';
 import SelectFormat from '@/components/select-format';
-import type { FormData } from './home';
+import type { FormData } from './heic';
 
 type OptionsProps = {
   fields: FieldArrayWithId<FormData, 'images'>[];

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-const title = 'Konvert - Free HEIC to JPG & PNG Converter';
+const title = 'Konvert - Image Format Converter';
 
 const description =
   'Fast, secure, and free HEIC to JPG or PNG conversion, all in your browser. No uploads required, 100% privacy guaranteed.';
@@ -20,6 +20,7 @@ const keywords = [
 
 export const GlobalMeta: Metadata = {
   metadataBase: new URL('https://www.knvrt.one/'),
+  title,
   icons: {
     icon: [
       { url: '/favicon.ico', type: 'image/x-icon' },
@@ -33,7 +34,7 @@ export const GlobalMeta: Metadata = {
   manifest: '/site.webmanifest',
 };
 
-export const HomeMeta: Metadata = {
+export const HeicMeta: Metadata = {
   title: title,
   description: description,
   keywords: [

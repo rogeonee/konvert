@@ -1,10 +1,10 @@
-import Home from '@/components/home';
-import { HomeMeta } from '@/lib/seo-config';
+import Home from '@/components/heic';
+import { HeicMeta } from '@/lib/seo-config';
 
-export const metadata = HomeMeta;
+export const metadata = HeicMeta;
 
-const HomePage = () => {
+const HeicPage = () => {
   return <Home />;
 };
 
-export default HomePage;
+export default HeicPage;

@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 export type FormData = z.infer<typeof formSchema>;
 
-const Home = () => {
+const Heic = () => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -345,4 +345,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Heic;
