@@ -1,7 +1,7 @@
-import Home from '@/components/heic';
+import Webp from '@/components/webp';
 
 const WebpPage = () => {
-  return <Home />;
+  return <Webp />;
 };
 
 export default WebpPage;
