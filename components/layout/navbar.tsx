@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ModeToggle } from '@/components/ui/theme-toggle';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -12,6 +15,10 @@ import {
 import EnvelopeLogo from '../env-logo';
 
 export default function Navbar() {
+  const pathname = usePathname();
+
+  const isActive = (route: string) => pathname === route;
+
   return (
     <header className="sticky top-0 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 md:px-6 z-20">
       <nav className="flex items-center gap-4 text-md font-medium sm:text-md md:text-lg">
@@ -21,21 +28,39 @@ export default function Navbar() {
           <NavigationMenuList>
             <NavigationMenuItem>
               <Link href={'/'} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink
+                  className={`${navigationMenuTriggerStyle()} ${
+                    isActive('/')
+                      ? 'underline text-primary'
+                      : 'dark:text-[var(--custom-dark-font-color)]'
+                  }`}
+                >
                   HEIC
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href={'/webp'} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink
+                  className={`${navigationMenuTriggerStyle()} ${
+                    isActive('/webp')
+                      ? 'underline text-primary'
+                      : 'dark:text-[var(--custom-dark-font-color)]'
+                  }`}
+                >
                   WEBP
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href={'/about'} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink
+                  className={`${navigationMenuTriggerStyle()} ${
+                    isActive('/about')
+                      ? 'underline text-primary'
+                      : 'dark:text-[var(--custom-dark-font-color)]'
+                  }`}
+                >
                   About
                 </NavigationMenuLink>
               </Link>
