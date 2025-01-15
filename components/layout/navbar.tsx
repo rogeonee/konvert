@@ -23,14 +23,15 @@ export default function Navbar() {
     <header className="sticky top-0 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 md:px-6 z-20">
       <nav className="flex items-center gap-4 text-md font-medium sm:text-md md:text-lg">
         <EnvelopeLogo className="w-8 h-8" />
+        <p className="hidden sm:flex font-semibold">Konvert</p>
         <Separator orientation="vertical" className="hidden sm:flex h-8 ml-4" />
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href={'/'} legacyBehavior passHref>
+              <Link href={'/heic'} legacyBehavior passHref>
                 <NavigationMenuLink
                   className={`${navigationMenuTriggerStyle()} ${
-                    isActive('/')
+                    isActive('/heic')
                       ? 'underline text-primary'
                       : 'dark:text-[var(--custom-dark-font-color)]'
                   }`}

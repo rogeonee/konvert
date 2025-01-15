@@ -1,10 +1,5 @@
-import Heic from '@/components/heic';
-import { HeicMeta } from '@/lib/seo-config';
+import { redirect } from 'next/navigation';
 
-export const metadata = HeicMeta;
-
-const HeicPage = () => {
-  return <Heic />;
-};
-
-export default HeicPage;
+export default function Home() {
+  redirect('/heic');
+}
