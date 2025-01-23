@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import * as zip from '@zip.js/zip.js';
-import { setupWorker } from '@/lib/worker-setup';
+import { setupHeicWorker } from '@/lib/worker-setup';
 
 interface ConvertedFile {
   blob: Blob;
@@ -35,7 +35,7 @@ export const useHeicConversion = () => {
   // 1) Initialize Worker if not already
   const initWorker = useCallback(() => {
     if (!workerRef.current) {
-      const worker = setupWorker();
+      const worker = setupHeicWorker();
       if (!worker) return; // SSR or no window
 
       workerRef.current = worker;

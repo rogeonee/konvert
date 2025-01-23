@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import * as zip from '@zip.js/zip.js';
+import { setupWebpWorker } from '@/lib/worker-setup';
 
 interface ConvertedFile {
   blob: Blob;
@@ -17,6 +18,11 @@ export const useWebpConversion = () => {
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [zipBlob, setZipBlob] = useState<Blob | null>(null);
   const [activeConversions, setActiveConversions] = useState(0);
+
+  // Store the single worker instance in a ref.
+  const workerRef = useRef<Worker | null>(null);
+
+  const progressRef = useRef<FileProgress>({});
 
   const updateProgress = useCallback((filename: string, progress: number) => {
     setProgressMap((prev) => ({
@@ -52,61 +58,95 @@ export const useWebpConversion = () => {
     setIsConverting(activeConversions > 0);
   }, [activeConversions]);
 
-  const artificialDelay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+  // Initialize Worker if not already
+  const initWorker = useCallback(() => {
+    if (!workerRef.current) {
+      const worker = setupWebpWorker();
+      if (!worker) return; // SSR or no window
 
+      workerRef.current = worker;
+    }
+  }, []);
+
+  // Initialize worker on mount
+  useEffect(() => {
+    initWorker();
+  }, [initWorker]);
+
+  // Listen to worker messages
+  useEffect(() => {
+    if (!workerRef.current) return;
+
+    const handleWorkerMessage = (event: MessageEvent) => {
+      const data = event.data;
+      if (!data) return;
+
+      if (data.type === 'progress') {
+        const { id, progress } = data;
+        updateProgress(id, progress);
+      } else if (data.type === 'result') {
+        // Decrement active conversions
+        setActiveConversions((count) => Math.max(0, count - 1));
+
+        // Store this newly converted file
+        const { id, blob, format, filename } = data;
+        setConvertedFiles((prev) => [
+          ...prev,
+          {
+            blob,
+            originalName: filename,
+            format,
+          },
+        ]);
+      }
+    };
+
+    workerRef.current.addEventListener('message', handleWorkerMessage);
+
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.removeEventListener('message', handleWorkerMessage);
+      }
+    };
+  }, [updateProgress]);
+
+  // Main conversion function
   const convertWebpToFormat = useCallback(
     async (file: File, format: string, quality: number): Promise<void> => {
       setActiveConversions((count) => count + 1);
       try {
+        // Make sure worker is initialized
+        initWorker();
+        if (!workerRef.current) {
+          setActiveConversions((count) => Math.max(0, count - 1));
+          return;
+        }
+
+        // Reset progress to 0 for this file
         updateProgress(file.name, 0);
 
-        const img = new Image();
-        img.onload = async () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext('2d');
+        // Read file as ArrayBuffer
+        const fileBuffer = await file.arrayBuffer();
+        // Wrap in a Uint8Array so that decode sees typed data
+        const typedArray = new Uint8Array(fileBuffer);
 
-          if (!ctx) {
-            throw new Error('Canvas context not available');
-          }
-
-          ctx.drawImage(img, 0, 0);
-
-          await artificialDelay(500);
-
-          const blob = await new Promise<Blob | null>((resolve) => {
-            canvas.toBlob((b) => resolve(b), `image/${format}`, quality);
-          });
-
-          if (!blob) {
-            throw new Error('Failed to convert image');
-          }
-
-          setConvertedFiles((prev) => [
-            ...prev,
-            {
-              blob,
-              originalName: file.name,
-              format,
-            },
-          ]);
-        };
-
-        img.onerror = () => {
-          throw new Error('Failed to load image');
-        };
-
-        img.src = URL.createObjectURL(file);
+        // Post to worker (transfer typedArray.buffer)
+        workerRef.current.postMessage(
+          {
+            id: file.name,
+            fileBuffer: typedArray,
+            filename: file.name,
+            format,
+            quality,
+          },
+          [typedArray.buffer],
+        );
       } catch (error) {
         console.error('Error during conversion:', error);
-      } finally {
         setActiveConversions((count) => Math.max(0, count - 1));
-        updateProgress(file.name, 100);
       }
     },
-    [updateProgress],
+    [initWorker, updateProgress],
   );
 
   const downloadFile = useCallback((file: ConvertedFile) => {
@@ -153,6 +193,7 @@ export const useWebpConversion = () => {
     setZipBlob(null);
     setProgressMap({});
     setActiveConversions(0);
+    progressRef.current = {};
   }, []);
 
   return {
