@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import Options from '@/components/options';
 import ImageCard from '@/components/image-card';
-import { filterHeicFiles } from '@/lib/utils';
-import { useHeicConversion } from '@/hooks/useHeicConversion';
+import { filterWebpFiles } from '@/lib/utils';
+import { useWebpConversion } from '@/hooks/useWebpConversion';
 import { useToast } from '@/hooks/use-toast';
 import { ToastAction } from './ui/toast';
 
@@ -55,7 +55,7 @@ const Webp = () => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const validFiles = filterHeicFiles(acceptedFiles);
+      const validFiles = filterWebpFiles(acceptedFiles);
 
       if (acceptedFiles.length !== validFiles.length) {
         toast({
@@ -103,7 +103,7 @@ const Webp = () => {
   });
 
   const {
-    convertHeicToFormat,
+    convertWebpToFormat,
     isConverting,
     progressMap,
     convertedFiles,
@@ -111,7 +111,7 @@ const Webp = () => {
     downloadFile,
     removeConvertedFile,
     clearConvertedFiles,
-  } = useHeicConversion();
+  } = useWebpConversion();
 
   const onSubmit = async (data: FormData) => {
     const qualityMap = { low: 0.4, medium: 0.7, high: 0.9 };
@@ -121,7 +121,7 @@ const Webp = () => {
       clearConvertedFiles();
 
       for (const image of data.images) {
-        await convertHeicToFormat(
+        await convertWebpToFormat(
           image.file,
           data.format,
           qualityMap[data.quality],
@@ -151,14 +151,14 @@ const Webp = () => {
   const handleAddMore = () => {
     const input = document.getElementById('fileInput') as HTMLInputElement;
 
-    input.onchange = (event: Event) => {
+    input.onchange = () => {
       const files = Array.from(input.files || []);
-      const validFiles = filterHeicFiles(files);
+      const validFiles = filterWebpFiles(files);
       if (files.length !== validFiles.length) {
         toast({
           title: 'Non-WEBP files were skipped.',
           description: 'Only WEBP files are supported.',
-          className: 'bg-white',
+          //className: 'bg-white',
         });
       }
 
