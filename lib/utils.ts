@@ -13,3 +13,12 @@ export const filterHeicFiles = (files: File[]) => {
 
   return validFiles;
 };
+
+export const filterWebpFiles = (files: File[]) => {
+  const validFiles = files.filter((file) => {
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    return extension === 'webp';
+  });
+
+  return validFiles;
+};

@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import * as zip from '@zip.js/zip.js';
-import { setupHeicWorker } from '@/lib/worker-setup';
+import { setupWebpWorker } from '@/lib/worker-setup';
 
 interface ConvertedFile {
   blob: Blob;
@@ -12,19 +12,18 @@ interface FileProgress {
   [filename: string]: number;
 }
 
-export const useHeicConversion = () => {
+export const useWebpConversion = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [progressMap, setProgressMap] = useState<FileProgress>({});
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [zipBlob, setZipBlob] = useState<Blob | null>(null);
   const [activeConversions, setActiveConversions] = useState(0);
 
-  // Store the single worker instance in a ref
+  // Store the single worker instance in a ref.
   const workerRef = useRef<Worker | null>(null);
 
   const progressRef = useRef<FileProgress>({});
 
-  // Update progress for a single file
   const updateProgress = useCallback((filename: string, progress: number) => {
     setProgressMap((prev) => ({
       ...prev,
@@ -32,17 +31,6 @@ export const useHeicConversion = () => {
     }));
   }, []);
 
-  // 1) Initialize Worker if not already
-  const initWorker = useCallback(() => {
-    if (!workerRef.current) {
-      const worker = setupHeicWorker();
-      if (!worker) return; // SSR or no window
-
-      workerRef.current = worker;
-    }
-  }, []);
-
-  // Create a ZIP file from multiple converted Blobs
   const createZipFile = useCallback(
     async (files: ConvertedFile[]): Promise<Blob> => {
       const zipWriter = new zip.ZipWriter(
@@ -69,6 +57,16 @@ export const useHeicConversion = () => {
   useEffect(() => {
     setIsConverting(activeConversions > 0);
   }, [activeConversions]);
+
+  // Initialize Worker if not already
+  const initWorker = useCallback(() => {
+    if (!workerRef.current) {
+      const worker = setupWebpWorker();
+      if (!worker) return; // SSR or no window
+
+      workerRef.current = worker;
+    }
+  }, []);
 
   // Initialize worker on mount
   useEffect(() => {
@@ -113,7 +111,7 @@ export const useHeicConversion = () => {
   }, [updateProgress]);
 
   // Main conversion function
-  const convertHeicToFormat = useCallback(
+  const convertWebpToFormat = useCallback(
     async (file: File, format: string, quality: number): Promise<void> => {
       setActiveConversions((count) => count + 1);
       try {
@@ -151,28 +149,21 @@ export const useHeicConversion = () => {
     [initWorker, updateProgress],
   );
 
-  // Download a single file
   const downloadFile = useCallback((file: ConvertedFile) => {
     const url = URL.createObjectURL(file.blob);
     const a = document.createElement('a');
-
     a.href = url;
     a.download = `${file.originalName.split('.')[0]}.${file.format}`;
     document.body.appendChild(a);
     a.click();
-
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }, []);
 
-  // Download all converted files, or zip them
   const downloadAll = useCallback(async () => {
     if (convertedFiles.length > 3) {
-      // Always re-create the zip from the current final list
       const blob = await createZipFile(convertedFiles);
       setZipBlob(blob);
-
-      // Download the zip
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -182,23 +173,14 @@ export const useHeicConversion = () => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } else {
-      // For 3 or fewer, just download individually
       convertedFiles.forEach(downloadFile);
     }
   }, [convertedFiles, createZipFile, downloadFile]);
 
-  // Remove one file from the list
   const removeConvertedFile = useCallback((filename: string) => {
-    setConvertedFiles((prev) => {
-      const newFiles = prev.filter((file) => file.originalName !== filename);
-      // If we drop below 4 files, we no longer have a valid zip
-      if (newFiles.length <= 3) {
-        setZipBlob(null);
-      }
-      return newFiles;
-    });
-
-    // Clean up progress
+    setConvertedFiles((prev) =>
+      prev.filter((file) => file.originalName !== filename),
+    );
     setProgressMap((prev) => {
       const newMap = { ...prev };
       delete newMap[filename];
@@ -206,7 +188,6 @@ export const useHeicConversion = () => {
     });
   }, []);
 
-  // Clear all
   const clearConvertedFiles = useCallback(() => {
     setConvertedFiles([]);
     setZipBlob(null);
@@ -216,7 +197,7 @@ export const useHeicConversion = () => {
   }, []);
 
   return {
-    convertHeicToFormat,
+    convertWebpToFormat,
     downloadFile,
     downloadAll,
     removeConvertedFile,

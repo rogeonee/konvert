@@ -1,10 +1,5 @@
-import Home from '@/components/home';
-import { HomeMeta } from '@/lib/seo-config';
+import { redirect } from 'next/navigation';
 
-export const metadata = HomeMeta;
-
-const HomePage = () => {
-  return <Home />;
-};
-
-export default HomePage;
+export default function Home() {
+  redirect('/heic');
+}

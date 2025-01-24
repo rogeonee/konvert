@@ -1,9 +1,10 @@
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import { Control, FieldArrayWithId } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import SelectQuality from '@/components/select-quality';
 import SelectFormat from '@/components/select-format';
-import type { FormData } from './home';
+import type { FormData } from './heic';
 
 type OptionsProps = {
   fields: FieldArrayWithId<FormData, 'images'>[];
@@ -22,13 +23,16 @@ const Options: React.FC<OptionsProps> = ({
   currentState = 'start-emp',
   isPng,
 }) => {
+  const pathname = usePathname();
+  const formatFromPath = pathname.replace('/', '').toUpperCase();
+
   return (
     <div className="flex flex-row justify-between sm:items-center sm:gap-8">
       {/* Selects */}
       <div className="flex flex-col md:flex-row items-center gap-4 w-full">
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
           <h1 className="text-2xl font-semibold md:text-3xl whitespace-nowrap">
-            Konvert to
+            {formatFromPath} to
           </h1>
           <SelectFormat
             control={control}
