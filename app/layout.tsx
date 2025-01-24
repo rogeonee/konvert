@@ -17,6 +17,13 @@ const fontSans = FontSans({
 
 export const metadata = GlobalMeta;
 
+/** react-scan
+ * 
+  <head>
+    <script src="https://unpkg.com/react-scan/dist/auto.global.js" async />
+  </head>
+ */
+
 export default function RootLayout({
   children,
 }: Readonly<{
