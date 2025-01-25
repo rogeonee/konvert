@@ -1,8 +1,49 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { AboutMeta } from '@/lib/seo-config';
 import { Separator } from '@/components/ui/separator';
 
-export const metadata = AboutMeta;
+export const metadata: Metadata = {
+  title: 'About',
+  description:
+    'Learn more about Konvert, the fast, secure, and free image converter built for the modern web. Discover the story behind the project and future plans.',
+  keywords: [
+    'About Konvert',
+    'image format converter story',
+    'free online converter',
+    'modern web converter',
+    'HEIC to JPG converter origin',
+    'future of Konvert',
+  ],
+  alternates: {
+    canonical: 'https://www.knvrt.one/about',
+  },
+  openGraph: {
+    title: 'About Konvert | Why It Exists and What’s Next',
+    description:
+      'Learn more about Konvert, the fast, secure, and free image converter built for the modern web. Discover the story behind the project and future plans.',
+    url: 'https://www.knvrt.one/about',
+    images: [
+      {
+        url: 'https://www.knvrt.one/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Learn more about Konvert - the sleek and secure image converter.',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Konvert | Why It Exists and What’s Next',
+    description:
+      'Learn more about Konvert, the fast, secure, and free image converter built for the modern web. Discover the story behind the project and future plans.',
+    images: [
+      {
+        url: 'https://www.knvrt.one/og-image.png',
+        alt: 'Learn more about Konvert - the sleek and secure image converter.',
+      },
+    ],
+  },
+};
 
 const About = () => {
   return (
@@ -22,7 +63,7 @@ const About = () => {
             <Link
               href={'https://vercel.com/about'}
               target="_blank"
-              className="text-primary underline"
+              className="text-primary underline underline-offset-4"
             >
               Vercel
             </Link>{' '}
@@ -30,7 +71,7 @@ const About = () => {
             <Link
               href={'https://ui.shadcn.com/docs'}
               target="_blank"
-              className="text-primary underline"
+              className="text-primary underline underline-offset-4"
             >
               shadcn
             </Link>
@@ -77,7 +118,7 @@ const About = () => {
             <Link
               href={'https://buymeacoffee.com/rogeonee'}
               target="_blank"
-              className="text-primary underline"
+              className="text-primary underline underline-offset-4"
             >
               buying me a coffee
             </Link>
