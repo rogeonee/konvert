@@ -7,7 +7,7 @@ import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 import SnowfallComponent from '@/components/snowfall';
-import { GlobalMeta } from '@/lib/seo-config';
+import { GlobalMeta } from '@/lib/metadata';
 import { cn } from '@/lib/utils';
 
 const fontSans = FontSans({
