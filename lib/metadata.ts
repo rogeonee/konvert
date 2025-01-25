@@ -49,7 +49,7 @@ export const GlobalMeta: Metadata = {
     siteName: 'Konvert',
     images: [
       {
-        url: 'https://www.knvrt.one/og-image.png',
+        url: 'https://www.knvrt.one/main-og.png',
         width: 1200,
         height: 630,
         alt: 'Konvert - Fast and Secure Image Converter',
@@ -66,7 +66,7 @@ export const GlobalMeta: Metadata = {
     creator: '@roge_one_',
     images: [
       {
-        url: 'https://www.knvrt.one/og-image.png',
+        url: 'https://www.knvrt.one/main-og.png',
         alt: 'Konvert - Fast and Secure Image Converter',
       },
     ],

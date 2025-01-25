@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     url: 'https://www.knvrt.one/heic',
     images: [
       {
-        url: 'https://www.knvrt.one/og-image.png',
+        url: 'https://www.knvrt.one/heic-og.png',
         width: 1200,
         height: 630,
         alt: 'Convert HEIC to JPG or PNG online with Konvert.',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
       'Easily convert HEIC images to JPG or PNG online. Fast, secure, and 100% browser-based with no uploads required.',
     images: [
       {
-        url: 'https://www.knvrt.one/og-image.png',
+        url: 'https://www.knvrt.one/heic-og.png',
         alt: 'Convert HEIC to JPG or PNG online with Konvert.',
       },
     ],

@@ -17,13 +17,13 @@ export const metadata: Metadata = {
     canonical: 'https://www.knvrt.one/webp',
   },
   openGraph: {
-    title: 'WEBP to JPG or PNG Converter | Konvert',
+    title: 'WEBP | Konvert',
     description:
       'Easily convert WEBP images to JPG or PNG online. Fast, secure, and 100% browser-based with no uploads required.',
     url: 'https://www.knvrt.one/webp',
     images: [
       {
-        url: 'https://www.knvrt.one/og-image.png',
+        url: 'https://www.knvrt.one/webp-og.png',
         width: 1200,
         height: 630,
         alt: 'Convert WEBP to JPG or PNG online with Konvert.',
@@ -32,12 +32,12 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'WEBP to JPG or PNG Converter | Konvert',
+    title: 'WEBP | Konvert',
     description:
       'Easily convert WEBP images to JPG or PNG online. Fast, secure, and 100% browser-based with no uploads required.',
     images: [
       {
-        url: 'https://www.knvrt.one/og-image.png',
+        url: 'https://www.knvrt.one/webp-og.png',
         alt: 'Convert WEBP to JPG or PNG online with Konvert.',
       },
     ],
