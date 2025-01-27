@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     url: 'https://www.knvrt.one/avif',
     images: [
       {
-        url: 'https://www.knvrt.one/avif-og.png',
+        url: 'https://www.knvrt.one/og/avif-og.png',
         width: 1200,
         height: 630,
         alt: 'Convert AVIF to JPG or PNG online with Konvert.',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
       'Easily convert AVIF images to JPG or PNG online. Fast, secure, and 100% browser-based with no uploads required.',
     images: [
       {
-        url: 'https://www.knvrt.one/avif-og.png',
+        url: 'https://www.knvrt.one/og/avif-og.png',
         alt: 'Convert AVIF to JPG or PNG online with Konvert.',
       },
     ],

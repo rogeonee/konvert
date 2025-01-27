@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: 'WEBP | Konvert',
     description:
       'Easily convert WEBP images to JPG or PNG online. Fast, secure, and 100% browser-based with no uploads required.',
-    url: 'https://www.knvrt.one/webp',
+    url: 'https://www.knvrt.one/og/webp',
     images: [
       {
         url: 'https://www.knvrt.one/webp-og.png',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
       'Easily convert WEBP images to JPG or PNG online. Fast, secure, and 100% browser-based with no uploads required.',
     images: [
       {
-        url: 'https://www.knvrt.one/webp-og.png',
+        url: 'https://www.knvrt.one/og/webp-og.png',
         alt: 'Convert WEBP to JPG or PNG online with Konvert.',
       },
     ],
