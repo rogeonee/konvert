@@ -1,29 +1,11 @@
 /// <reference lib="webworker" />
 
 import decode from 'heic-decode';
-
-interface WorkerMessage {
-  id: string;
-  fileBuffer: ArrayBuffer;
-  filename: string;
-  format: string; // "jpg", "png", ...
-  quality: number; // 0.0 to 1.0
-}
-
-interface WorkerProgressMessage {
-  id: string;
-  type: 'progress';
-  filename: string;
-  progress: number;
-}
-
-interface WorkerResultMessage {
-  id: string;
-  type: 'result';
-  filename: string;
-  blob: Blob;
-  format: string;
-}
+import {
+  WorkerMessage,
+  WorkerResultMessage,
+  postProgress,
+} from './workerUtils';
 
 // OffscreenCanvas is used to create a PNG/JPEG blob from the raw RGBA data
 
@@ -78,8 +60,3 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
     postProgress({ id, type: 'progress', filename, progress: 100 });
   }
 };
-
-// Helper to post progress messages
-function postProgress(msg: WorkerProgressMessage) {
-  (self as unknown as Worker).postMessage(msg);
-}

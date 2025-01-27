@@ -1,27 +1,10 @@
 /// <reference lib="webworker" />
 
-interface WorkerMessage {
-  id: string;
-  fileBuffer: ArrayBuffer;
-  filename: string;
-  format: string; // "jpg", "png", ...
-  quality: number; // 0.0 to 1.0
-}
-
-interface WorkerProgressMessage {
-  id: string;
-  type: 'progress';
-  filename: string;
-  progress: number;
-}
-
-interface WorkerResultMessage {
-  id: string;
-  type: 'result';
-  filename: string;
-  blob: Blob;
-  format: string;
-}
+import {
+  WorkerMessage,
+  WorkerResultMessage,
+  postProgress,
+} from './workerUtils';
 
 self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
   const { id, fileBuffer, filename, format, quality } = event.data;
@@ -68,7 +51,3 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
     postProgress({ id, type: 'progress', filename, progress: 100 });
   }
 };
-
-function postProgress(msg: WorkerProgressMessage) {
-  (self as unknown as Worker).postMessage(msg);
-}
