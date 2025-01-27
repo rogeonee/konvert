@@ -1,7 +1,7 @@
 'use client';
 
 import Converter from '@/components/converter';
-import { filterWebpFiles } from '@/lib/utils';
+import { filterFiles } from '@/lib/utils';
 import { useWebpConversion } from '@/hooks/useWebpConversion';
 
 export default function WebpConverter() {
@@ -9,7 +9,7 @@ export default function WebpConverter() {
     <Converter
       acceptedFileExtension={'.webp'}
       formatName="WEBP"
-      filterFiles={filterWebpFiles}
+      filterFiles={filterFiles}
       conversionHook={useWebpConversion}
       defaultOutputFormat="jpg"
     />

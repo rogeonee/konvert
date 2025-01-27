@@ -1,7 +1,7 @@
 'use client';
 
 import Converter from '@/components/converter';
-import { filterAvifFiles } from '@/lib/utils';
+import { filterFiles } from '@/lib/utils';
 import { useAvifConversion } from '@/hooks/useAvifConversion';
 
 export default function AvifConverter() {
@@ -9,7 +9,7 @@ export default function AvifConverter() {
     <Converter
       acceptedFileExtension={'.avif'}
       formatName="AVIF"
-      filterFiles={filterAvifFiles}
+      filterFiles={filterFiles}
       conversionHook={useAvifConversion}
       defaultOutputFormat="jpg"
     />

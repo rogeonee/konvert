@@ -1,7 +1,7 @@
 'use client';
 
 import Converter from '@/components/converter';
-import { filterHeicFiles } from '@/lib/utils';
+import { filterFiles } from '@/lib/utils';
 import { useHeicConversion } from '@/hooks/useHeicConversion';
 
 export default function HeicConverter() {
@@ -9,7 +9,7 @@ export default function HeicConverter() {
     <Converter
       acceptedFileExtension={'.heic'}
       formatName="HEIC"
-      filterFiles={filterHeicFiles}
+      filterFiles={filterFiles}
       conversionHook={useHeicConversion}
       defaultOutputFormat="jpg"
     />

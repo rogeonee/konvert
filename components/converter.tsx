@@ -26,7 +26,7 @@ export type FormData = z.infer<typeof formSchema>;
 export type ConverterConfig = {
   acceptedFileExtension: string;
   formatName: string;
-  filterFiles: (files: File[]) => File[];
+  filterFiles: (extension: string, files: File[]) => File[];
   conversionHook: any;
   defaultOutputFormat: string;
 };
@@ -77,12 +77,12 @@ const Converter = ({
   // dropzone config
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const validFiles = filterFiles(acceptedFiles);
+      const validFiles = filterFiles(formatName.toLowerCase(), acceptedFiles);
 
       if (acceptedFiles.length !== validFiles.length) {
         toast({
           title: `Non-${formatName} files were skipped.`,
-          description: `It is a ${formatName} converter after all.`,
+          description: `It is ${formatName} converter after all.`,
           className: 'border-[#A80115]',
         });
       }
@@ -164,7 +164,7 @@ const Converter = ({
 
     input.onchange = () => {
       const files = Array.from(input.files || []);
-      const validFiles = filterFiles(files);
+      const validFiles = filterFiles(formatName.toLowerCase(), files);
       if (files.length !== validFiles.length) {
         toast({
           title: `Non-${formatName} files were skipped.`,
