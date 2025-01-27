@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     url: 'https://www.knvrt.one/about',
     images: [
       {
-        url: 'https://www.knvrt.one/main-og.png',
+        url: 'https://www.knvrt.one/og/main-og.png',
         width: 1200,
         height: 630,
         alt: 'Learn more about Konvert - the sleek and secure image converter.',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
       'Learn more about Konvert, the fast, secure, and free image converter built for the modern web. Discover the story behind the project and future plans.',
     images: [
       {
-        url: 'https://www.knvrt.one/main-og.png',
+        url: 'https://www.knvrt.one/og/main-og.png',
         alt: 'Learn more about Konvert - the sleek and secure image converter.',
       },
     ],
