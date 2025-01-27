@@ -2,15 +2,15 @@
 
 import Converter from '@/components/converter';
 import { filterFiles } from '@/lib/utils';
-import { useWebpConversion } from '@/hooks/useWebpConversion';
+import { useAvifConversion } from '@/hooks/useAvifConversion';
 
-export default function WebpConverter() {
+export default function AvifConverter() {
   return (
     <Converter
-      acceptedFileExtension={'.webp'}
-      formatName="WEBP"
+      acceptedFileExtension={'.avif'}
+      formatName="AVIF"
       filterFiles={filterFiles}
-      conversionHook={useWebpConversion}
+      conversionHook={useAvifConversion}
       defaultOutputFormat="jpg"
     />
   );

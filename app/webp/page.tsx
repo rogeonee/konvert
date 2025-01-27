@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Webp from '@/components/webp';
+import WebpConverter from '@/components/webp';
 
 export const metadata: Metadata = {
   title: 'WEBP',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 const WebpPage = () => {
-  return <Webp />;
+  return <WebpConverter />;
 };
 
 export default WebpPage;

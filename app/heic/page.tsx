@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Heic from '@/components/heic';
+import HeicConverter from '@/components/heic';
 
 export const metadata: Metadata = {
   title: 'HEIC',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 const HeicPage = () => {
-  return <Heic />;
+  return <HeicConverter />;
 };
 
 export default HeicPage;

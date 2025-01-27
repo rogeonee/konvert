@@ -5,19 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const filterHeicFiles = (files: File[]) => {
+export const filterFiles = (extension: string, files: File[]) => {
   const validFiles = files.filter((file) => {
-    const extension = file.name.split('.').pop()?.toLowerCase();
-    return extension === 'heic';
-  });
-
-  return validFiles;
-};
-
-export const filterWebpFiles = (files: File[]) => {
-  const validFiles = files.filter((file) => {
-    const extension = file.name.split('.').pop()?.toLowerCase();
-    return extension === 'webp';
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    return ext === extension;
   });
 
   return validFiles;
