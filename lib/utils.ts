@@ -22,3 +22,12 @@ export const filterWebpFiles = (files: File[]) => {
 
   return validFiles;
 };
+
+export const filterAvifFiles = (files: File[]) => {
+  const validFiles = files.filter((file) => {
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    return extension === 'avif';
+  });
+
+  return validFiles;
+};

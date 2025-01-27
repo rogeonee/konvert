@@ -8,6 +8,7 @@ export default function Navbar() {
   const links = [
     { href: '/heic', label: 'HEIC' },
     { href: '/webp', label: 'WEBP' },
+    { href: '/avif', label: 'AVIF' },
     { href: '/about', label: 'About' },
   ];
 

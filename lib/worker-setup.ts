@@ -15,3 +15,12 @@ export const setupWebpWorker = () => {
   );
   return worker;
 };
+
+export const setupAvifWorker = () => {
+  if (typeof window === 'undefined') return null;
+  const worker = new Worker(
+    new URL('../workers/avifWorker.ts', import.meta.url),
+    { type: 'module' },
+  );
+  return worker;
+};
