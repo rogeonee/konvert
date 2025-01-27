@@ -1,10 +1,9 @@
-import React from 'react';
 import { usePathname } from 'next/navigation';
 import { Control, FieldArrayWithId } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import SelectQuality from '@/components/select-quality';
 import SelectFormat from '@/components/select-format';
-import type { FormData } from './heic';
+import type { FormData } from '@/components/converter';
 
 type OptionsProps = {
   fields: FieldArrayWithId<FormData, 'images'>[];
