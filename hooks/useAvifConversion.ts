@@ -103,7 +103,7 @@ export const useAvifConversion = () => {
     };
   }, [updateProgress]);
 
-  const convertAvifToFormat = useCallback(
+  const convertToFormat = useCallback(
     async (file: File, format: string, quality: number): Promise<void> => {
       setActiveConversions((count) => count + 1);
       try {
@@ -183,7 +183,7 @@ export const useAvifConversion = () => {
   }, []);
 
   return {
-    convertAvifToFormat,
+    convertToFormat,
     downloadFile,
     downloadAll,
     removeConvertedFile,

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Avif from '@/components/avif';
+import AvifConverter from '@/components/avif';
 
 export const metadata: Metadata = {
   title: 'AVIF',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 const AvifPage = () => {
-  return <Avif />;
+  return <AvifConverter />;
 };
 
 export default AvifPage;

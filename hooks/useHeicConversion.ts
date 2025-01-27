@@ -113,7 +113,7 @@ export const useHeicConversion = () => {
   }, [updateProgress]);
 
   // Main conversion function
-  const convertHeicToFormat = useCallback(
+  const convertToFormat = useCallback(
     async (file: File, format: string, quality: number): Promise<void> => {
       setActiveConversions((count) => count + 1);
       try {
@@ -216,7 +216,7 @@ export const useHeicConversion = () => {
   }, []);
 
   return {
-    convertHeicToFormat,
+    convertToFormat,
     downloadFile,
     downloadAll,
     removeConvertedFile,

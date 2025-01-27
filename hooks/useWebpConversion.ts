@@ -111,7 +111,7 @@ export const useWebpConversion = () => {
   }, [updateProgress]);
 
   // Main conversion function
-  const convertWebpToFormat = useCallback(
+  const convertToFormat = useCallback(
     async (file: File, format: string, quality: number): Promise<void> => {
       setActiveConversions((count) => count + 1);
       try {
@@ -197,7 +197,7 @@ export const useWebpConversion = () => {
   }, []);
 
   return {
-    convertWebpToFormat,
+    convertToFormat,
     downloadFile,
     downloadAll,
     removeConvertedFile,
