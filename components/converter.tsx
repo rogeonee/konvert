@@ -256,7 +256,7 @@ const Converter = ({
               id="fileInput"
               accept={acceptedFileExtension}
             />
-            {/* Only ONE AnimatePresence */}
+
             <AnimatePresence mode="wait">
               {fields.length === 0 ? (
                 // Empty dropzone

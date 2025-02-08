@@ -94,58 +94,65 @@ const ImageCard: React.FC<ImageProps> = ({
       exit="exit"
       layout
     >
-      <Card
-        className={cn(
-          'relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4',
-          isConverting
-            ? ''
-            : ' transition-transform transform md:hover:scale-[1.005] md:hover:border-accent-foreground/70',
-          className,
-        )}
+      <motion.div
+        whileHover={
+          !isConverting && isMobile === 'not-mobile' ? { scale: 1.01 } : {} // No hover effect if converting or on small screens
+        }
+        transition={{ type: 'spring', stiffness: 300, damping: 15 }}
       >
-        {progress > 0 && (
-          <Progress value={progress} className="animate-progress-pulse" />
-        )}
-        <CardHeader className="flex-row items-center gap-3 pl-4">
-          <FileImage className="hidden sm:flex w-[30px] h-[30px]" />
-          <div>
-            <CardTitle className="text-md font-medium sm:text-md md:text-lg">
-              {isMobile !== 'not-mobile'
-                ? truncateFilename(namePart) + formatPart
-                : namePart + formatPart}{' '}
-            </CardTitle>
-            <CardDescription>{formatFileSize(filesize)}</CardDescription>
-          </div>
-        </CardHeader>
-        <div className="flex items-center gap-4">
-          {isConverted && onDownload && (
+        <Card
+          className={cn(
+            'relative flex flex-row justify-between items-center w-full h-20 pl-0 pr-4',
+            isConverting
+              ? '' // No hover styles when converting
+              : 'md:hover:border-accent-foreground/40',
+            className,
+          )}
+        >
+          {progress > 0 && (
+            <Progress value={progress} className="animate-progress-pulse" />
+          )}
+          <CardHeader className="flex-row items-center gap-3 pl-4">
+            <FileImage className="hidden sm:flex w-[30px] h-[30px]" />
+            <div>
+              <CardTitle className="text-md font-medium sm:text-md md:text-lg">
+                {isMobile !== 'not-mobile'
+                  ? truncateFilename(namePart) + formatPart
+                  : namePart + formatPart}{' '}
+              </CardTitle>
+              <CardDescription>{formatFileSize(filesize)}</CardDescription>
+            </div>
+          </CardHeader>
+          <div className="flex items-center gap-4">
+            {isConverted && onDownload && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="hover:border-[#029220]"
+                disabled={currentState === 'converse'}
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent form submission
+                  e.stopPropagation(); // Stop event bubbling
+
+                  onDownload();
+                }}
+              >
+                <Download className="h-4 w-4" />
+              </Button>
+            )}
             <Button
               variant="outline"
               size="icon"
-              className="hover:border-[#029220]"
+              className="hover:border-[#A80115]"
               disabled={currentState === 'converse'}
-              onClick={(e) => {
-                e.preventDefault(); // Prevent form submission
-                e.stopPropagation(); // Stop event bubbling
-
-                onDownload();
-              }}
+              onClick={onRemove}
+              type="button"
             >
-              <Download className="h-4 w-4" />
+              <X />
             </Button>
-          )}
-          <Button
-            variant="outline"
-            size="icon"
-            className="hover:border-[#A80115]"
-            disabled={currentState === 'converse'}
-            onClick={onRemove}
-            type="button"
-          >
-            <X />
-          </Button>
-        </div>
-      </Card>
+          </div>
+        </Card>
+      </motion.div>
     </motion.div>
   );
 };
