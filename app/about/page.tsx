@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import AboutContent from '@/components/about-content';
+import AboutContent from '@/components/pages/about-content';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -44,12 +44,10 @@ export const metadata: Metadata = {
   },
 };
 
-const About = () => {
+export default function About() {
   return (
     <div className="mx-auto max-w-prose pt-11 sm:py-3">
       <AboutContent />
     </div>
   );
-};
-
-export default About;
+}

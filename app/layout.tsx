@@ -48,7 +48,7 @@ export default function RootLayout({
               <Navbar />
               <main className="flex-1 p-4">
                 {children}
-                <SnowfallComponent />
+                {/* <SnowfallComponent /> */}
                 <SpeedInsights />
               </main>
               <Toaster />
