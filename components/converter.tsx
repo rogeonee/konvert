@@ -265,7 +265,7 @@ const Converter = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.4 }}
                   className="flex flex-1 items-center justify-center p-2 sm:p-4 h-empty-base sm:h-empty-base-sm md:h-empty-base-md lg:h-empty-base-lg"
                 >
                   <div className="flex flex-col items-center gap-1 text-center">

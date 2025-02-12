@@ -29,7 +29,14 @@ const Options: React.FC<OptionsProps> = ({
   return (
     <div className="flex flex-row justify-between sm:items-center sm:gap-8">
       {/* Selects */}
-      <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+      <motion.div
+        key="selects"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-col md:flex-row items-center gap-4 w-full"
+      >
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
           <h1 className="text-2xl font-semibold md:text-3xl whitespace-nowrap">
             {formatFromPath} to
@@ -50,7 +57,7 @@ const Options: React.FC<OptionsProps> = ({
             disabled={currentState === 'converse' || isPng}
           />
         </div>
-      </div>
+      </motion.div>
 
       {/* Buttons */}
       <div className="flex flex-col gap-4 items-end md:flex-row-reverse sm:justify-end md:items-center w-full md:w-auto">
