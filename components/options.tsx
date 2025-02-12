@@ -1,8 +1,9 @@
 import { usePathname } from 'next/navigation';
 import { Control, FieldArrayWithId } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
+import { AnimatePresence, motion } from 'motion/react';
 import SelectQuality from '@/components/select-quality';
 import SelectFormat from '@/components/select-format';
+import MotionButton from '@/components/ui/motion-button';
 import type { FormData } from '@/components/converter';
 
 type OptionsProps = {
@@ -28,7 +29,14 @@ const Options: React.FC<OptionsProps> = ({
   return (
     <div className="flex flex-row justify-between sm:items-center sm:gap-8">
       {/* Selects */}
-      <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+      <motion.div
+        key="selects"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-col md:flex-row items-center gap-4 w-full"
+      >
         <div className="flex w-full md:w-auto items-center justify-start gap-4">
           <h1 className="text-2xl font-semibold md:text-3xl whitespace-nowrap">
             {formatFromPath} to
@@ -49,34 +57,55 @@ const Options: React.FC<OptionsProps> = ({
             disabled={currentState === 'converse' || isPng}
           />
         </div>
-      </div>
+      </motion.div>
 
       {/* Buttons */}
-      <div className="flex flex-col gap-4 items-end md:flex-row sm:justify-end md:items-center w-full md:w-auto">
-        {currentState !== 'start-emp' && (
-          <Button
-            variant="outline"
-            onClick={handleReset}
-            type="button"
-            disabled={currentState === 'converse'}
-            className="w-[70px] hover:border-[#A80115]"
-          >
-            Clear
-          </Button>
-        )}
-        {currentState === 'start-add' && (
-          <Button
-            variant="default"
-            onClick={(e) => {
-              e.preventDefault();
-              handleAddMore();
-            }}
-            type="button"
-            className="w-[100px]"
-          >
-            Add more
-          </Button>
-        )}
+      <div className="flex flex-col gap-4 items-end md:flex-row-reverse sm:justify-end md:items-center w-full md:w-auto">
+        <AnimatePresence mode="wait">
+          {['start-add', 'end'].includes(currentState) && (
+            <motion.div
+              key="clear"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              layout
+            >
+              <MotionButton
+                variant="outline"
+                onClick={handleReset}
+                type="button"
+                disabled={currentState === 'converse'}
+                className="w-[70px] hover:border-[#A80115]"
+              >
+                Clear
+              </MotionButton>
+            </motion.div>
+          )}
+
+          {currentState === 'start-add' && (
+            <motion.div
+              key="add-more"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              layout
+            >
+              <MotionButton
+                variant="default"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleAddMore();
+                }}
+                type="button"
+                className="w-[100px]"
+              >
+                Add more
+              </MotionButton>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

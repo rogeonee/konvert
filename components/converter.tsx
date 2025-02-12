@@ -4,6 +4,7 @@ import { useCallback, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { Download, Loader2 } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -255,69 +256,89 @@ const Converter = ({
               id="fileInput"
               accept={acceptedFileExtension}
             />
-            {fields.length === 0 ? (
-              // Empty dropzone
-              <div className="flex flex-1 items-center justify-center p-2 sm:p-4 h-empty-base sm:h-empty-base-sm md:h-empty-base-md lg:h-empty-base-lg">
-                <div className="flex flex-col items-center gap-1 text-center">
-                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
-                    {isDragActive
-                      ? 'Drop the files here'
-                      : `Drop ${formatName} files or pick manually`}
-                  </h2>
-                  <p className="text-sm text-muted-foreground">Max size 50MB</p>
-                  <Button
-                    variant="default"
-                    className="mt-4"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleAddMore();
-                    }}
-                    type="button"
-                  >
-                    Choose files
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              // added ImageCards
-              <div
-                className="dropzone flex flex-col gap-2 w-full overflow-y-auto p-2 
-                  sm:p-4 h-filled-base sm:h-filled-base-sm md:h-filled-base-md lg:h-filled-base-lg"
-                style={{
-                  boxSizing: 'content-box',
-                }}
-              >
-                {fields.map((field, index) => {
-                  // match converted file by original filename
-                  const convertedFile = convertedFiles.find(
-                    (cf: { originalName: string }) =>
-                      cf.originalName === field.file.name,
-                  );
 
-                  return (
-                    <ImageCard
-                      key={field.id}
-                      filename={field.file.name}
-                      filesize={field.file.size}
-                      onRemove={() => handleRemoveFile(index, field.file.name)}
-                      control={form.control}
-                      name={`images.${index}.format`}
-                      progress={progressMap[field.file.name] || 0}
-                      isConverting={isConverting}
-                      isConverted={!!convertedFile}
-                      currentState={currentState}
-                      onDownload={
-                        convertedFile
-                          ? () => {
-                              downloadFile(convertedFile);
-                            }
-                          : undefined
-                      }
-                    />
-                  );
-                })}
-              </div>
-            )}
+            <AnimatePresence mode="wait">
+              {fields.length === 0 ? (
+                // Empty dropzone
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="flex flex-1 items-center justify-center p-2 sm:p-4 h-empty-base sm:h-empty-base-sm md:h-empty-base-md lg:h-empty-base-lg"
+                >
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
+                      {isDragActive
+                        ? 'Drop the files here'
+                        : `Drop ${formatName} files or pick manually`}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      Max size 50MB
+                    </p>
+                    <Button
+                      variant="default"
+                      className="mt-4"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleAddMore();
+                      }}
+                      type="button"
+                    >
+                      Choose files
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : (
+                // added ImageCards
+                <motion.div
+                  key="filled"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  layout
+                  className="dropzone flex flex-col gap-2 w-full p-2 overflow-y-auto sm:p-4 h-filled-base sm:h-filled-base-sm md:h-filled-base-md lg:h-filled-base-lg"
+                  style={{
+                    boxSizing: 'content-box',
+                  }}
+                >
+                  <AnimatePresence>
+                    {fields.map((field, index) => {
+                      const convertedFile = convertedFiles.find(
+                        (cf: { originalName: string }) =>
+                          cf.originalName === field.file.name,
+                      );
+
+                      return (
+                        <ImageCard
+                          key={field.id}
+                          filename={field.file.name}
+                          filesize={field.file.size}
+                          onRemove={() =>
+                            handleRemoveFile(index, field.file.name)
+                          }
+                          control={form.control}
+                          name={`images.${index}.format`}
+                          progress={progressMap[field.file.name] || 0}
+                          isConverting={isConverting}
+                          isConverted={!!convertedFile}
+                          currentState={currentState}
+                          onDownload={
+                            convertedFile
+                              ? () => {
+                                  downloadFile(convertedFile);
+                                }
+                              : undefined
+                          }
+                        />
+                      );
+                    })}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Buttons */}
