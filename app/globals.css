@@ -62,7 +62,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --custom-dark-font-color: #d1d5db; /* Change this to your desired dark mode font color */
+    --custom-dark-font-color: #d1d5db;
   }
 }
 
@@ -74,8 +74,6 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* globals.css or styles.css */
 
 /* Styles for larger screens (laptops, desktops) */
 @media (min-width: 1024px) {
