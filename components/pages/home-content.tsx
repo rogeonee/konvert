@@ -59,7 +59,7 @@ const Landing = () => {
       />
 
       {/* Hero Section: fills the viewport */}
-      <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+      <section className="relative flex flex-col items-center justify-center min-h-screen px-4">
         <BlurFade delay={0.2}>
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
@@ -102,7 +102,7 @@ const Landing = () => {
       </section>
 
       {/* Why Konvert Section: below the hero */}
-      <section className="relative z-10 w-full max-w-5xl mx-auto px-4 pb-24">
+      <section className="relative w-full max-w-5xl mx-auto px-4 pb-24">
         <BlurFade inView>
           <div className="relative">
             {/* Glow behind the card */}
@@ -114,7 +114,7 @@ const Landing = () => {
               className="rounded-lg"
             />
             {/* The card above the glow */}
-            <div className="p-6 rounded-lg border border-border bg-card relative z-10">
+            <div className="p-6 rounded-lg border border-border bg-card relative">
               <h2 className="text-xl font-semibold mb-4 text-card-foreground">
                 Why Konvert?
               </h2>

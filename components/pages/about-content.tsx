@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 const AboutContent = () => {
   return (
     <motion.article
-      className="prose dark:prose-invert"
+      className="p-4 prose dark:prose-invert"
       initial="hidden"
       animate="visible"
       variants={{
