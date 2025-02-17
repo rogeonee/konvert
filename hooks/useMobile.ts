@@ -9,16 +9,12 @@ const useMobile = () => {
 
       if (width < 400) {
         setMobileSize('small');
-        console.log('useMobile | small');
       } else if (width >= 400 && width < 420) {
         setMobileSize('medium');
-        console.log('useMobile | medium');
       } else if (width >= 420 && width < 640) {
         setMobileSize('large');
-        console.log('useMobile | large');
       } else {
         setMobileSize('not-mobile'); // Not a mobile
-        console.log('useMobile | not-mobile');
       }
     };
 

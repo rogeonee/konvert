@@ -7,7 +7,7 @@ export const GlobalMeta: Metadata = {
   metadataBase: new URL('https://www.knvrt.one/'),
   title: {
     template: '%s | Konvert',
-    default: 'Konvert - Image Format Converter',
+    default: 'Konvert | Image Format Converter',
   },
   description: description,
   applicationName: 'Konvert',

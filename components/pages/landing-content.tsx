@@ -42,7 +42,7 @@ const whyKonvertItems = [
   },
 ];
 
-const Landing = () => {
+export default function LandingContent() {
   return (
     <div className="relative bg-background overflow-hidden">
       {/* Animated grid bg */}
@@ -139,6 +139,4 @@ const Landing = () => {
       </section>
     </div>
   );
-};
-
-export default Landing;
+}

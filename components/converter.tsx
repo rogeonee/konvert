@@ -106,7 +106,6 @@ const Converter = ({
         );
 
         const length = largeFiles.length;
-        console.log('largeFiles length', length);
         if (length > 0) {
           toast({
             title: 'Some files are too large.',
