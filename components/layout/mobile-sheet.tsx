@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import {
   Sheet,
   SheetTrigger,
@@ -40,7 +41,23 @@ export function MobileSheet({
           </SheetTitle>
         </SheetHeader>
         <div className="grid gap-4 py-10">
-          {links.map((link) => (
+          {links.slice(0, 2).map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                pathname === link.href
+                  ? 'underline underline-offset-4 text-primary'
+                  : 'dark:text-[var(--custom-dark-font-color)]',
+                'text-sm font-semibold hover:bg-accent hover:text-accent-foreground transition-colors rounded-md px-4 py-2',
+              )}
+              onClick={handleLinkClick}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Separator orientation="horizontal" className="" />
+          {links.slice(2).map((link) => (
             <Link
               key={link.href}
               href={link.href}

@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: `${baseUrl}/`,
-      lastModified: new Date('2025-01-25'),
+      lastModified: new Date('2025-02-16'),
       changeFrequency: 'yearly',
       priority: 1.0,
     },
@@ -18,6 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/webp`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/avif`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 1.0,

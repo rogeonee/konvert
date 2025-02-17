@@ -106,7 +106,6 @@ const Converter = ({
         );
 
         const length = largeFiles.length;
-        console.log('largeFiles length', length);
         if (length > 0) {
           toast({
             title: 'Some files are too large.',
@@ -232,7 +231,7 @@ const Converter = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 space-y-8">
         <div className="flex min-h-[calc(100vh-8rem)] sm:min-h-[calc(100vh-6rem)] flex-col gap-4 lg:gap-6 lg:p-6">
           {/* Options */}
           <Options
@@ -299,7 +298,7 @@ const Converter = ({
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                   layout
-                  className="dropzone flex flex-col gap-2 w-full p-2 overflow-y-auto sm:p-4 h-filled-base sm:h-filled-base-sm md:h-filled-base-md lg:h-filled-base-lg"
+                  className="customscroll flex flex-col gap-2 w-full p-2 overflow-y-auto sm:p-4 h-filled-base sm:h-filled-base-sm md:h-filled-base-md lg:h-filled-base-lg"
                   style={{
                     boxSizing: 'content-box',
                   }}

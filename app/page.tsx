@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import Landing from '@/components/pages/landing-content';
 
-export default function Home() {
-  redirect('/heic');
+export default function LandingPage() {
+  return <Landing />;
 }

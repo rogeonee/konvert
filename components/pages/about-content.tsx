@@ -1,33 +1,15 @@
-'use client';
-
 import Link from 'next/link';
-import { motion } from 'motion/react';
 import { Separator } from '@/components/ui/separator';
+import { BlurFade } from '@/components/ui/blur-fade';
 
-const AboutContent = () => {
+export default function AboutContent() {
   return (
-    <motion.article
-      className="prose dark:prose-invert"
-      initial="hidden"
-      animate="visible"
-      variants={{
-        hidden: { opacity: 0, y: 10 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-      }}
-    >
-      <motion.h1
-        className="text-3xl sm:text-4xl font-semibold mb-8"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0 }}
-      >
-        About Konvert
-      </motion.h1>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-      >
+    <article className="p-4 prose dark:prose-invert">
+      <BlurFade className="text-3xl sm:text-4xl font-semibold mb-8" delay={0}>
+        <h1>About Konvert</h1>
+      </BlurFade>
+
+      <BlurFade delay={0.2}>
         <h2 className="text-xl sm:text-2xl font-semibold mb-5">
           Why It Exists 🛰️
         </h2>
@@ -60,10 +42,11 @@ const AboutContent = () => {
             <li>4. Mobile-first</li>
           </ol>
           <p className="my-5">
-            Starting with “any to any format” proved complex, so I focused on
-            solving one real problem: HEIC. Yes, Apple — iPhones shoot in HEIC
-            by default, yet Safari doesn’t even support it. So Konvert focuses
-            on converting HEIC to JPG or PNG.
+            I decided to focus on the most inconvenient formats, that I
+            encountered more often than I wanted to. So, now Konvert supports
+            HEIC, WEBP and AVIF, to the most common and comfortable for everyone
+            JPEG, the most widely used format, and PNG for those who prioritize
+            quality.
           </p>
           <p className="my-5">
             Best part? Your photos never leave your device. Modern browsers
@@ -71,35 +54,31 @@ const AboutContent = () => {
             private.
           </p>
         </div>
-      </motion.div>
+      </BlurFade>
 
       <Separator orientation="horizontal" className="my-5" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.4 }}
-      >
+      <BlurFade delay={0.4}>
         <h2 className="text-xl sm:text-2xl font-semibold mb-5">
           What’s Next 👀
         </h2>
         <div className="dark:text-[var(--custom-dark-font-color)]">
           <p className="my-5">
-            Time will tell if we need another converter, but I have plans to
-            support more formats (looking at you, WEBP) and expand Konvert’s
-            capabilities. Found a bug? Have a feature request? I’d love to hear
-            from you.
+            I’m still debating whether to expand into “any to any format”, the
+            market is flooded with those after all. I was against adding
+            advanced options before, but maybe features like keeping EXIF
+            metadata could be useful.
+          </p>
+          <p className="my-5">
+            Anyway. Found a bug? Have a feature request? I’d love to hear from
+            you.
           </p>
         </div>
-      </motion.div>
+      </BlurFade>
 
       <Separator orientation="horizontal" className="my-5" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.6 }}
-      >
+      <BlurFade delay={0.6}>
         <h2 className="text-xl sm:text-2xl font-semibold mb-5">
           Support the Project ☕
         </h2>
@@ -115,12 +94,19 @@ const AboutContent = () => {
               buying me a coffee
             </Link>
             ! Your support helps keep the project running and motivates future
-            improvements.
+            improvements. Oh, and if you’re curious about what else I’m
+            building, you can check out my other work{' '}
+            <Link
+              href={'https://www.rogeonee.com/'}
+              target="_blank"
+              className="text-primary underline underline-offset-4"
+            >
+              here
+            </Link>
+            .
           </p>
         </div>
-      </motion.div>
-    </motion.article>
+      </BlurFade>
+    </article>
   );
-};
-
-export default AboutContent;
+}

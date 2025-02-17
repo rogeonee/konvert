@@ -31,5 +31,5 @@
   "theme_color": "#09090b",
   "background_color": "#09090b",
   "display": "standalone",
-  "start_url": "/heic"
+  "start_url": "/"
 }

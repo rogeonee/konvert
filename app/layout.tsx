@@ -34,7 +34,7 @@ export default function RootLayout({
       <CSPostHogProvider>
         <body
           className={cn(
-            'min-h-screen bg-background font-sans antialiased relative',
+            'h-screen overflow-hidden bg-background font-sans antialiased relative',
             fontSans.variable,
           )}
         >
@@ -44,15 +44,15 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex min-h-screen w-full flex-col">
+            <div className="flex h-full w-full flex-col">
               <Navbar />
-              <main className="flex-1 p-4">
+              <main className="flex-1 overflow-y-auto box-border customscroll">
                 {children}
-                {/* <SnowfallComponent /> */}
+                <Footer />
                 <SpeedInsights />
+                <SnowfallComponent />
               </main>
               <Toaster />
-              <Footer />
             </div>
           </ThemeProvider>
         </body>

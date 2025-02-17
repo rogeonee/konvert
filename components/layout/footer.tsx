@@ -6,8 +6,8 @@ import { usePathname } from 'next/navigation';
 export default function Footer() {
   const pathname = usePathname();
 
-  // Show footer only on About page
-  if (pathname !== '/about') {
+  // show footer at root and about pages
+  if (pathname !== '/about' && pathname !== '/') {
     return null;
   }
 
