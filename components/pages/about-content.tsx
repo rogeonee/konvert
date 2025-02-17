@@ -1,33 +1,15 @@
-'use client';
-
 import Link from 'next/link';
-import { motion } from 'motion/react';
 import { Separator } from '@/components/ui/separator';
+import { BlurFade } from '@/components/ui/blur-fade';
 
 const AboutContent = () => {
   return (
-    <motion.article
-      className="p-4 prose dark:prose-invert"
-      initial="hidden"
-      animate="visible"
-      variants={{
-        hidden: { opacity: 0, y: 10 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-      }}
-    >
-      <motion.h1
-        className="text-3xl sm:text-4xl font-semibold mb-8"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0 }}
-      >
-        About Konvert
-      </motion.h1>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-      >
+    <article className="p-4 prose dark:prose-invert">
+      <BlurFade className="text-3xl sm:text-4xl font-semibold mb-8" delay={0}>
+        <h1>About Konvert</h1>
+      </BlurFade>
+
+      <BlurFade delay={0.2}>
         <h2 className="text-xl sm:text-2xl font-semibold mb-5">
           Why It Exists 🛰️
         </h2>
@@ -71,15 +53,11 @@ const AboutContent = () => {
             private.
           </p>
         </div>
-      </motion.div>
+      </BlurFade>
 
       <Separator orientation="horizontal" className="my-5" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.4 }}
-      >
+      <BlurFade delay={0.4}>
         <h2 className="text-xl sm:text-2xl font-semibold mb-5">
           What’s Next 👀
         </h2>
@@ -91,15 +69,11 @@ const AboutContent = () => {
             from you.
           </p>
         </div>
-      </motion.div>
+      </BlurFade>
 
       <Separator orientation="horizontal" className="my-5" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.6 }}
-      >
+      <BlurFade delay={0.6}>
         <h2 className="text-xl sm:text-2xl font-semibold mb-5">
           Support the Project ☕
         </h2>
@@ -118,8 +92,8 @@ const AboutContent = () => {
             improvements.
           </p>
         </div>
-      </motion.div>
-    </motion.article>
+      </BlurFade>
+    </article>
   );
 };
 

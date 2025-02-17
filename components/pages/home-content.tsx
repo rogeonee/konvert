@@ -65,7 +65,9 @@ const Landing = () => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
               Konvert your images.
               <br />
-              <span className="text-muted-foreground">Simple. Fast. Free.</span>
+              <span className="text-muted-foreground">
+                Fast. Local. Secure.
+              </span>
             </h1>
             <p className="text-muted-foreground mt-4 text-lg max-w-md mx-auto">
               Effortlessly convert rare and tricky image formats right in your

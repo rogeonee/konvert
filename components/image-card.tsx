@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Control } from 'react-hook-form';
 import { Download, X, FileImage } from 'lucide-react';
 import { motion } from 'motion/react';
