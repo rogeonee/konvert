@@ -6,7 +6,6 @@ import { CSPostHogProvider } from '@/components/providers/posthog-provider';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
-import SnowfallComponent from '@/components/snowfall';
 import { GlobalMeta } from '@/lib/metadata';
 import { cn } from '@/lib/utils';
 
@@ -50,7 +49,6 @@ export default function RootLayout({
                 {children}
                 <Footer />
                 <SpeedInsights />
-                <SnowfallComponent />
               </main>
               <Toaster />
             </div>
